@@ -435,7 +435,7 @@ function FAQSection() {
   const items = [
     {
       q: "What does preorder mean and when will I get my order?",
-      a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on July 27, 2026, then we go straight into production. Estimated ship window: August 2026. You'll get a tracking email the day yours ships.",
+      a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on July 31, 2026, then we go straight into production. Estimated ship window: August 2026. You'll get a tracking email the day yours ships.",
     },
     {
       q: "Why isn't this just available to buy right now?",

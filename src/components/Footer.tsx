@@ -86,6 +86,11 @@ export function Footer() {
                   Shipping & Returns
                 </Link>
               </li>
+              <li>
+                <Link to="/admin" className="hover:text-lime font-bold text-lime">
+                  Admin Dashboard
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

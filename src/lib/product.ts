@@ -18,7 +18,7 @@ export const PRODUCT = {
   currencyGHS: "GHS",
   sizes: ["S", "M", "L", "XL", "XXL"] as const,
   shipEstimate: "Ships August 2026",
-  preorderCloseISO: "2026-07-27T23:59:59-05:00",
+  preorderCloseISO: "2026-07-31T23:59:59-05:00",
   images: {
     front: teeFront,
     back: teeBack,

@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useMatch,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -131,17 +132,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // Detect if we're on the admin route to suppress the public nav/footer
+  const isAdmin = useMatch({ from: "/admin", shouldThrow: false });
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="min-h-screen flex flex-col bg-cream text-forest-deep">
-        <Nav />
-        <main className="flex-1">
+      {isAdmin ? (
+        // Admin gets its own standalone layout — no public nav, footer, or promo bar
+        <div className="min-h-screen bg-cream text-forest-deep">
           <Outlet />
-        </main>
-        <Footer />
-        <MobilePreorderBar />
-      </div>
+        </div>
+      ) : (
+        <div className="min-h-screen flex flex-col bg-cream text-forest-deep">
+          <Nav />
+          <main className="flex-1">
+            <Outlet />
+          </main>
+          <Footer />
+          <MobilePreorderBar />
+        </div>
+      )}
     </QueryClientProvider>
   );
 }
