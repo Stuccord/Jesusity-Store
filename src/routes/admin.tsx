@@ -69,9 +69,31 @@ function AdminPage() {
   const [newCode, setNewCode] = useState("");
   const [newValue, setNewValue] = useState<number>(15);
   const [newType, setNewType] = useState<"PERCENT" | "FIXED">("PERCENT");
+  const [newCommissionRate, setNewCommissionRate] = useState<number>(10);
   const [newInfluencer, setNewInfluencer] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [couponSuccessMsg, setCouponSuccessMsg] = useState("");
+
+  const handleCreateCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCode.trim() || !newInfluencer.trim()) return;
+    couponStore.add({
+      code: newCode.trim().toUpperCase(),
+      type: newType,
+      value: newValue,
+      commissionRate: newCommissionRate,
+      influencerName: newInfluencer.trim(),
+      description: newDesc.trim() || `${newInfluencer.trim()}'s promo code`,
+      active: true,
+    });
+    setCouponSuccessMsg(`✓ Coupon "${newCode.toUpperCase()}" created with ${newCommissionRate}% commission for ${newInfluencer}.`);
+    setNewCode("");
+    setNewValue(15);
+    setNewCommissionRate(10);
+    setNewInfluencer("");
+    setNewDesc("");
+    setTimeout(() => setCouponSuccessMsg(""), 5000);
+  };
 
   const handleSyncPaystackApi = async () => {
     setSyncingApi(true);
@@ -169,25 +191,7 @@ function AdminPage() {
     return searchMatch && statusMatch && couponMatch;
   });
 
-  const handleCreateCoupon = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newCode.trim()) return;
 
-    couponStore.add({
-      code: newCode,
-      value: Number(newValue),
-      type: newType,
-      influencerName: newInfluencer || "Promotional Code",
-      description: newDesc || `${newValue}% discount code`,
-      active: true,
-    });
-
-    setCouponSuccessMsg(`Coupon "${newCode.toUpperCase()}" created successfully!`);
-    setNewCode("");
-    setNewInfluencer("");
-    setNewDesc("");
-    setTimeout(() => setCouponSuccessMsg(""), 4000);
-  };
 
   return (
     <div className="min-h-screen bg-cream/30 text-foreground pb-20">
@@ -429,18 +433,31 @@ function AdminPage() {
                 <div className="space-y-4">
                   {analytics.couponPerformance.map((cp) => {
                     const pct = analytics.totalRevenueGHS > 0 ? Math.round((cp.revenueGHS / analytics.totalRevenueGHS) * 100) : 0;
+                    const hasCommission = cp.commissionRate > 0 && cp.commissionGHS > 0;
                     return (
-                      <div key={cp.code} className="border-2 border-forest-deep p-3.5 bg-cream/40 space-y-2">
+                      <div key={cp.code} className={`border-2 p-3.5 space-y-2 ${hasCommission ? "border-lime bg-lime/10" : "border-forest-deep bg-cream/40"}`}>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="font-varsity text-base px-2 py-0.5 bg-forest-deep text-cream">
                               {cp.code}
                             </span>
-                            <span className="text-xs font-bold text-forest-deep">{cp.influencer}</span>
+                            <div>
+                              <div className="text-xs font-bold text-forest-deep">{cp.influencer}</div>
+                              {cp.commissionRate > 0 && (
+                                <div className="text-[10px] text-forest font-mono">{cp.commissionRate}% commission rate</div>
+                              )}
+                            </div>
                           </div>
-                          <span className="font-varsity text-lg text-forest-deep">
-                            GH₵{cp.revenueGHS.toLocaleString()} ({pct}%)
-                          </span>
+                          <div className="text-right">
+                            <div className="font-varsity text-base text-forest-deep">
+                              GH₵{cp.revenueGHS.toLocaleString()} ({pct}%)
+                            </div>
+                            {hasCommission && (
+                              <div className="text-[11px] font-bold text-forest bg-lime px-2 py-0.5 mt-0.5 text-right">
+                                Owes: GH₵{cp.commissionGHS.toFixed(2)} (${cp.commissionUSD.toFixed(2)})
+                              </div>
+                            )}
+                          </div>
                         </div>
 
                         <div className="w-full bg-cream border border-forest-deep h-3">
@@ -449,7 +466,7 @@ function AdminPage() {
 
                         <div className="flex justify-between text-[11px] text-muted-foreground font-mono pt-1">
                           <span>{cp.orders} Preorders generated</span>
-                          <span>Saved customers: GH₵{cp.discountGHS.toFixed(2)}</span>
+                          <span>Customer savings: GH₵{cp.discountGHS.toFixed(2)}</span>
                         </div>
                       </div>
                     );
@@ -638,41 +655,54 @@ function AdminPage() {
                 {coupons.map((c) => {
                   const ordersForCoupon = orders.filter((o) => o.couponCode?.toUpperCase() === c.code.toUpperCase());
                   const revenueGHS = ordersForCoupon.reduce((sum, o) => sum + o.totalGHS, 0);
+                  const commissionOwedGHS = Math.round((revenueGHS * ((c.commissionRate ?? 0) / 100)) * 100) / 100;
 
                   return (
-                    <div key={c.code} className="border-2 border-forest-deep p-4 bg-cream/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="font-varsity text-xl bg-forest-deep text-lime px-3 py-1">
-                            {c.code}
-                          </span>
-                          <span className="bg-lime text-forest-deep font-bold text-xs px-2 py-1 border border-forest-deep">
-                            {c.value}% OFF
-                          </span>
-                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 border ${c.active ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-red-100 text-red-800 border-red-300"}`}>
-                            {c.active ? "Active" : "Inactive"}
-                          </span>
+                    <div key={c.code} className="border-2 border-forest-deep p-4 bg-cream/40">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-varsity text-xl bg-forest-deep text-lime px-3 py-1">
+                              {c.code}
+                            </span>
+                            <span className="bg-lime text-forest-deep font-bold text-xs px-2 py-1 border border-forest-deep">
+                              {c.value}% OFF
+                            </span>
+                            {(c.commissionRate ?? 0) > 0 && (
+                              <span className="bg-forest text-cream font-bold text-xs px-2 py-1 border border-forest-deep">
+                                {c.commissionRate}% Commission
+                              </span>
+                            )}
+                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 border ${c.active ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-red-100 text-red-800 border-red-300"}`}>
+                              {c.active ? "Active" : "Inactive"}
+                            </span>
+                          </div>
+                          <div className="text-xs font-bold text-forest-deep">{c.influencerName}</div>
+                          <div className="text-xs text-muted-foreground">{c.description}</div>
                         </div>
-                        <div className="text-xs font-bold text-forest-deep">{c.influencerName}</div>
-                        <div className="text-xs text-muted-foreground">{c.description}</div>
-                      </div>
 
-                      <div className="flex items-center gap-6 sm:border-l-2 sm:border-forest-deep/20 sm:pl-6">
-                        <div className="text-right">
-                          <div className="font-varsity text-lg text-forest-deep">GH₵{revenueGHS.toLocaleString()}</div>
-                          <div className="text-xs font-mono text-muted-foreground">{ordersForCoupon.length} orders driven</div>
+                        <div className="flex items-center gap-6 sm:border-l-2 sm:border-forest-deep/20 sm:pl-6 shrink-0">
+                          <div className="text-right">
+                            <div className="font-varsity text-lg text-forest-deep">GH₵{revenueGHS.toLocaleString()}</div>
+                            <div className="text-xs font-mono text-muted-foreground">{ordersForCoupon.length} orders driven</div>
+                            {commissionOwedGHS > 0 && (
+                              <div className="mt-1 text-[11px] font-bold text-forest bg-lime px-2 py-0.5">
+                                Commission Due: GH₵{commissionOwedGHS.toFixed(2)}
+                              </div>
+                            )}
+                          </div>
+
+                          <button
+                            onClick={() => couponStore.toggleActive(c.code)}
+                            className={`px-3 py-1.5 text-xs font-bold tracking-wider uppercase border-2 transition-colors ${
+                              c.active
+                                ? "bg-red-50 text-destructive border-destructive hover:bg-destructive hover:text-white"
+                                : "bg-forest-deep text-lime border-forest-deep hover:bg-forest"
+                            }`}
+                          >
+                            {c.active ? "Deactivate" : "Activate"}
+                          </button>
                         </div>
-
-                        <button
-                          onClick={() => couponStore.toggleActive(c.code)}
-                          className={`px-3 py-1.5 text-xs font-bold tracking-wider uppercase border-2 transition-colors ${
-                            c.active
-                              ? "bg-red-50 text-destructive border-destructive hover:bg-destructive hover:text-white"
-                              : "bg-forest-deep text-lime border-forest-deep hover:bg-forest"
-                          }`}
-                        >
-                          {c.active ? "Deactivate" : "Activate"}
-                        </button>
                       </div>
                     </div>
                   );
@@ -746,10 +776,26 @@ function AdminPage() {
 
                 <div>
                   <label className="block text-[11px] font-bold tracking-widest uppercase text-muted-foreground mb-1">
-                    Influencer / Partner Name
+                    Commission Rate % (Influencer Earns)
+                  </label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={50}
+                    value={newCommissionRate}
+                    onChange={(e) => setNewCommissionRate(Number(e.target.value))}
+                    className="w-full border-2 border-forest-deep p-2.5 text-xs focus:outline-none"
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">e.g. 10 = influencer earns 10% of every sale they drive. Set 0 for brand promos.</p>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold tracking-widest uppercase text-muted-foreground mb-1">
+                    Influencer / Partner Name *
                   </label>
                   <input
                     type="text"
+                    required
                     placeholder="e.g. Kwame Mensah"
                     value={newInfluencer}
                     onChange={(e) => setNewInfluencer(e.target.value)}

@@ -209,20 +209,38 @@ export function computeAnalytics(ordersList: Order[]) {
     count,
   }));
 
-  // Coupon / Influencer tracking
+  // Coupon / Influencer tracking — commission rates match coupons.ts defaults
+  const COMMISSION_RATES: Record<string, number> = {
+    AMA: 10,
+    KOFI: 10,
+    JESUSITY10: 0,
+    DIRECT: 0,
+  };
+
   const couponStatsMap: Record<
     string,
-    { code: string; influencer: string; orders: number; revenueGHS: number; revenueUSD: number; discountGHS: number }
+    {
+      code: string;
+      influencer: string;
+      orders: number;
+      revenueGHS: number;
+      revenueUSD: number;
+      discountGHS: number;
+      commissionRate: number;
+      commissionGHS: number;
+      commissionUSD: number;
+    }
   > = {
-    AMA: { code: "AMA", influencer: "Ama Mensah", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0 },
-    KOFI: { code: "KOFI", influencer: "Kofi Owusu", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0 },
-    JESUSITY10: { code: "JESUSITY10", influencer: "Clovermade Studio", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0 },
-    DIRECT: { code: "DIRECT", influencer: "Direct / Organic", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0 },
+    AMA: { code: "AMA", influencer: "Ama Mensah", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 10, commissionGHS: 0, commissionUSD: 0 },
+    KOFI: { code: "KOFI", influencer: "Kofi Owusu", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 10, commissionGHS: 0, commissionUSD: 0 },
+    JESUSITY10: { code: "JESUSITY10", influencer: "Clovermade Studio", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 0, commissionGHS: 0, commissionUSD: 0 },
+    DIRECT: { code: "DIRECT", influencer: "Direct / Organic", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 0, commissionGHS: 0, commissionUSD: 0 },
   };
 
   ordersList.forEach((o) => {
     const key = o.couponCode ? o.couponCode.toUpperCase() : "DIRECT";
     if (!couponStatsMap[key]) {
+      const rate = COMMISSION_RATES[key] ?? 0;
       couponStatsMap[key] = {
         code: key,
         influencer: o.influencerName || "Custom Coupon",
@@ -230,12 +248,18 @@ export function computeAnalytics(ordersList: Order[]) {
         revenueGHS: 0,
         revenueUSD: 0,
         discountGHS: 0,
+        commissionRate: rate,
+        commissionGHS: 0,
+        commissionUSD: 0,
       };
     }
+    const rate = couponStatsMap[key].commissionRate;
     couponStatsMap[key].orders += 1;
     couponStatsMap[key].revenueGHS += o.totalGHS;
     couponStatsMap[key].revenueUSD += o.totalUSD;
     couponStatsMap[key].discountGHS += o.discountGHS;
+    couponStatsMap[key].commissionGHS += Math.round((o.totalGHS * (rate / 100)) * 100) / 100;
+    couponStatsMap[key].commissionUSD += Math.round((o.totalUSD * (rate / 100)) * 100) / 100;
   });
 
   const couponPerformance = Object.values(couponStatsMap);

@@ -5,7 +5,8 @@ export type DiscountType = "PERCENT" | "FIXED";
 export interface Coupon {
   code: string;
   type: DiscountType;
-  value: number; // e.g., 15 for 15% or 5 for $5
+  value: number;           // discount: e.g. 15 for 15% off to the customer
+  commissionRate: number;  // influencer earns this % of the revenue they generate (e.g. 10 = 10%)
   influencerName: string;
   description: string;
   active: boolean;
@@ -13,13 +14,14 @@ export interface Coupon {
   createdAt: string;
 }
 
-const STORAGE_KEY = "jesusity-coupons-v2";
+const STORAGE_KEY = "jesusity-coupons-v3";
 
 const DEFAULT_COUPONS: Coupon[] = [
   {
     code: "AMA",
     type: "PERCENT",
     value: 15,
+    commissionRate: 10,
     influencerName: "Ama Mensah",
     description: "Ama's 15% follower discount code",
     active: true,
@@ -30,6 +32,7 @@ const DEFAULT_COUPONS: Coupon[] = [
     code: "KOFI",
     type: "PERCENT",
     value: 20,
+    commissionRate: 10,
     influencerName: "Kofi Owusu",
     description: "Kofi's 20% follower discount code",
     active: true,
@@ -40,6 +43,7 @@ const DEFAULT_COUPONS: Coupon[] = [
     code: "JESUSITY10",
     type: "PERCENT",
     value: 10,
+    commissionRate: 0,
     influencerName: "Clovermade Studio",
     description: "10% Welcome preorder promo",
     active: true,
@@ -48,15 +52,19 @@ const DEFAULT_COUPONS: Coupon[] = [
   },
 ];
 
-let coupons: Coupon[] = [];
-const listeners = new Set<() => void>();
+let coupons: Coupon[] = DEFAULT_COUPONS;
+let loaded = false;
 
 function load() {
   if (typeof window === "undefined") return;
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      coupons = JSON.parse(raw);
+      const parsed: Coupon[] = JSON.parse(raw);
+      // Ensure default coupons always exist
+      const existingCodes = new Set(parsed.map((c) => c.code.toUpperCase()));
+      const missingDefaults = DEFAULT_COUPONS.filter((dc) => !existingCodes.has(dc.code.toUpperCase()));
+      coupons = [...parsed, ...missingDefaults];
     } else {
       coupons = DEFAULT_COUPONS;
       persist();
@@ -64,6 +72,7 @@ function load() {
   } catch {
     coupons = DEFAULT_COUPONS;
   }
+  loaded = true;
 }
 
 function persist() {
@@ -81,13 +90,16 @@ export const couponStore = {
     emit();
   },
   getAll(): Coupon[] {
+    if (typeof window !== "undefined" && !loaded) load();
     return coupons;
   },
   getByCode(code: string): Coupon | undefined {
+    if (typeof window !== "undefined" && !loaded) load();
     const clean = code.trim().toUpperCase();
     return coupons.find((c) => c.code.toUpperCase() === clean);
   },
   validate(code: string): { valid: boolean; coupon?: Coupon; error?: string } {
+    if (typeof window !== "undefined" && !loaded) load();
     if (!code || !code.trim()) {
       return { valid: false, error: "Please enter a coupon code." };
     }

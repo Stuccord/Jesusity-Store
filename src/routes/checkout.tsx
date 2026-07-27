@@ -124,6 +124,11 @@ function CheckoutPage() {
     setLoading(true);
     setPaystackError(false);
 
+    // Safety timeout: reset loading state if Paystack popup fails or shows invalid key error
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 6000);
+
     const ref = `JESUSITY-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
     const amountInPesewas = Math.round(totals.finalGHS * 100);
 
@@ -146,6 +151,7 @@ function CheckoutPage() {
           ],
         },
         callback(response) {
+          clearTimeout(timer);
           setOrderRef(response.reference);
 
           // Track order in ordersStore with live Paystack verification
@@ -184,55 +190,21 @@ function CheckoutPage() {
           setLoading(false);
         },
         onClose() {
+          clearTimeout(timer);
           setLoading(false);
-          setPaystackErrorMsg("Payment window closed. If you saw an 'Invalid Key' error, please set a valid VITE_PAYSTACK_PUBLIC_KEY in .env.");
+          setPaystackErrorMsg("Payment cancelled — the window was closed. You can try again.");
         },
       });
 
       handler.openIframe();
     } catch (err) {
+      clearTimeout(timer);
       setPaystackErrorMsg(`Paystack Error: ${String(err)}. Please check your VITE_PAYSTACK_PUBLIC_KEY in .env.`);
+      setLoading(false);
     }
   };
 
-  const handleTestPreorder = () => {
-    setLoading(true);
-    const ref = `JESUSITY-TEST-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
 
-    ordersStore.add({
-      ref,
-      customer: { ...form },
-      items: items.map((i) => ({
-        id: i.id,
-        name: i.name,
-        size: i.size,
-        priceUSD: i.price,
-        priceGHS: PRODUCT.priceGHS,
-        qty: i.qty,
-      })),
-      subtotalUSD: totals.subtotalUSD,
-      discountUSD: totals.discountUSD,
-      totalUSD: totals.finalUSD,
-      subtotalGHS: totals.subtotalGHS,
-      discountGHS: totals.discountGHS,
-      totalGHS: totals.finalGHS,
-      couponCode: appliedCoupon?.code,
-      influencerName: appliedCoupon?.influencerName,
-      status: "Paid",
-      verifiedWithPaystack: false,
-      paymentChannel: "Simulated Test Preorder",
-      createdAt: new Date().toISOString(),
-    });
-
-    if (appliedCoupon) {
-      couponStore.incrementUsage(appliedCoupon.code);
-    }
-
-    setOrderRef(ref);
-    setPlaced(true);
-    cart.clear();
-    setLoading(false);
-  };
 
   // ── Success screen ────────────────────────────────────────────────────────
 
@@ -472,21 +444,9 @@ function CheckoutPage() {
           </div>
 
           {paystackErrorMsg && (
-            <div className="bg-destructive/10 border-2 border-destructive p-4 text-xs text-destructive space-y-3">
-              <div className="flex items-center gap-2 font-bold">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{paystackErrorMsg}</span>
-              </div>
-              <div className="pt-2.5 border-t border-destructive/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <span className="text-[11px] text-foreground/80 font-medium">Want to test order submission right now?</span>
-                <button
-                  type="button"
-                  onClick={handleTestPreorder}
-                  className="bg-forest-deep text-cream text-[11px] font-bold tracking-wider px-3.5 py-2 uppercase hover:bg-forest transition-colors whitespace-nowrap shadow-sm"
-                >
-                  Complete Test Preorder
-                </button>
-              </div>
+            <div className="bg-destructive/10 border-2 border-destructive p-3 text-xs text-destructive flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{paystackErrorMsg}</span>
             </div>
           )}
 
