@@ -16,7 +16,7 @@ export interface PaystackVerificationResult {
       email?: string;
       phone?: string;
     };
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   };
 }
 
@@ -35,7 +35,9 @@ export function getPaystackConfig() {
   };
 }
 
-export async function verifyPaystackTransaction(reference: string): Promise<PaystackVerificationResult> {
+export async function verifyPaystackTransaction(
+  reference: string,
+): Promise<PaystackVerificationResult> {
   const { publicKey, isConfigured } = getPaystackConfig();
 
   if (!reference) {
@@ -44,13 +46,16 @@ export async function verifyPaystackTransaction(reference: string): Promise<Pays
 
   try {
     // Attempt verification via Paystack public transaction check API or backend proxy
-    const response = await fetch(`https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${publicKey}`,
-        "Content-Type": "application/json",
+    const response = await fetch(
+      `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${publicKey}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (response.ok) {
       const json = await response.json();

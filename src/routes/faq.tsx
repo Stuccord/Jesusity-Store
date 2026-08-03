@@ -29,7 +29,7 @@ export const Route = createFileRoute("/faq")({
               name: "What does preorder mean and when will I receive my order?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Preorder means you reserve your tee before we print it. Drop 001 preorders close July 31, 2026 — ships August 2026.",
+                text: "Preorder means you reserve your tee before we print it. Drop 001 preorders close September 30, 2026 — ships October 2026.",
               },
             },
           ],
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/faq")({
 const items = [
   {
     q: "What does preorder mean and when will I get my order?",
-    a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on July 31, 2026, then we go straight into production. Estimated ship window: August 2026. You'll get a tracking email the day yours ships.",
+    a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on September 30, 2026, then we go straight into production. Estimated ship window: October 2026. You'll get a tracking email the day yours ships.",
   },
   {
     q: "Why isn't this available for immediate purchase?",
@@ -51,7 +51,7 @@ const items = [
   },
   {
     q: "What's the fit like — should I size up or down?",
-    a: "The Jesusity Tee runs oversized and boxy by design. If you like a drop-shoulder streetwear silhouette, order your normal size. If you want it more fitted, size down one. Chest measurements: S 22\" · M 24\" · L 26\" · XL 28\" · XXL 30\".",
+    a: 'The Jesusity Tee runs oversized and boxy by design. If you like a drop-shoulder streetwear silhouette, order your normal size. If you want it more fitted, size down one. Chest measurements: S 22" · M 24" · L 26" · XL 28" · XXL 30".',
   },
   {
     q: "What's the meaning behind 'GOD of the EAST'?",

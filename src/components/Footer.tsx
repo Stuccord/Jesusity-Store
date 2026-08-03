@@ -14,8 +14,8 @@ export function Footer() {
           <div className="md:col-span-2">
             <div className="font-logo text-5xl text-cream leading-none">Jesusity</div>
             <p className="mt-4 max-w-sm text-sm text-cream/70">
-              The endless pursuit of the Son of God. A faith-rooted streetwear label from
-              Clovermade Studios. Made in limited drops.
+              The endless pursuit of the Son of God. A faith-rooted streetwear label from Clovermade
+              Studios. Made in limited drops.
             </p>
             <form
               className="mt-6 flex max-w-sm border-2 border-cream"

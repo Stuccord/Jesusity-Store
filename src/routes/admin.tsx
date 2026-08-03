@@ -1,6 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useOrders, ordersStore, computeAnalytics, exportOrdersToCSV, Order, OrderStatus } from "@/lib/orders-store";
+import {
+  useOrders,
+  ordersStore,
+  computeAnalytics,
+  exportOrdersToCSV,
+  Order,
+  OrderStatus,
+} from "@/lib/orders-store";
 import { useCoupons, couponStore } from "@/lib/coupons";
 import { getPaystackConfig } from "@/lib/paystack-api";
 import { fetchPaystackTransactions, isValidSecretKey, PaystackTx } from "@/lib/paystack-server";
@@ -42,7 +49,10 @@ export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
       { title: "Admin Analytics & Operations — Clovermade Studios" },
-      { name: "description", content: "Executive e-commerce analytics, order management, and influencer tracking." },
+      {
+        name: "description",
+        content: "Executive e-commerce analytics, order management, and influencer tracking.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -55,7 +65,9 @@ function AdminPage() {
   const analytics = computeAnalytics(orders);
   const paystackConfig = getPaystackConfig();
 
-  const [activeTab, setActiveTab] = useState<"analytics" | "orders" | "coupons" | "customers">("analytics");
+  const [activeTab, setActiveTab] = useState<"analytics" | "orders" | "coupons" | "customers">(
+    "analytics",
+  );
   const [syncingApi, setSyncingApi] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
@@ -86,7 +98,9 @@ function AdminPage() {
       description: newDesc.trim() || `${newInfluencer.trim()}'s promo code`,
       active: true,
     });
-    setCouponSuccessMsg(`✓ Coupon "${newCode.toUpperCase()}" created with ${newCommissionRate}% commission for ${newInfluencer}.`);
+    setCouponSuccessMsg(
+      `✓ Coupon "${newCode.toUpperCase()}" created with ${newCommissionRate}% commission for ${newInfluencer}.`,
+    );
     setNewCode("");
     setNewValue(15);
     setNewCommissionRate(10);
@@ -112,13 +126,16 @@ function AdminPage() {
 
       const txs: PaystackTx[] = res.transactions || [];
       if (txs.length === 0) {
-        setSyncNotice("Connected to Paystack API. No external transactions found yet — system ready for live checkouts.");
+        setSyncNotice(
+          "Connected to Paystack API. No external transactions found yet — system ready for live checkouts.",
+        );
         return;
       }
 
       const importedOrders: Order[] = txs.map((tx: PaystackTx) => {
         const amountGHS = tx.amount / 100;
         const amountUSD = Math.round((amountGHS / 11.5) * 100) / 100;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const meta = (tx.metadata || {}) as Record<string, any>;
 
         return {
@@ -191,8 +208,6 @@ function AdminPage() {
     return searchMatch && statusMatch && couponMatch;
   });
 
-
-
   return (
     <div className="min-h-screen bg-cream/30 text-foreground pb-20">
       {/* Top Header */}
@@ -208,10 +223,13 @@ function AdminPage() {
               </h1>
               <div className="flex items-center gap-3 text-xs text-cream/70 mt-1.5 flex-wrap">
                 <span className="flex items-center gap-1.5 text-lime font-bold font-mono">
-                  <Activity className="w-3.5 h-3.5 animate-pulse text-lime" /> Paystack API: {paystackConfig.environment}
+                  <Activity className="w-3.5 h-3.5 animate-pulse text-lime" /> Paystack API:{" "}
+                  {paystackConfig.environment}
                 </span>
                 <span>·</span>
-                <span>Product: {PRODUCT.name} ({PRODUCT.colorway})</span>
+                <span>
+                  Product: {PRODUCT.name} ({PRODUCT.colorway})
+                </span>
               </div>
             </div>
           </div>
@@ -235,11 +253,16 @@ function AdminPage() {
         </div>
 
         {syncNotice && (
-          <div className={`px-8 py-2.5 text-xs font-bold tracking-wider flex items-center justify-center gap-2 border-t ${
-            syncNotice.includes("Failed") || syncNotice.includes("401") || syncNotice.includes("missing") || syncNotice.includes("invalid")
-              ? "bg-red-900/90 text-red-100 border-red-700"
-              : "bg-lime text-forest-deep border-forest-deep"
-          }`}>
+          <div
+            className={`px-8 py-2.5 text-xs font-bold tracking-wider flex items-center justify-center gap-2 border-t ${
+              syncNotice.includes("Failed") ||
+              syncNotice.includes("401") ||
+              syncNotice.includes("missing") ||
+              syncNotice.includes("invalid")
+                ? "bg-red-900/90 text-red-100 border-red-700"
+                : "bg-lime text-forest-deep border-forest-deep"
+            }`}
+          >
             <Zap className="w-4 h-4 fill-current shrink-0" />
             <span>{syncNotice}</span>
           </div>
@@ -258,7 +281,7 @@ function AdminPage() {
             return (
               <button
                 key={t.id}
-                onClick={() => setActiveTab(t.id as any)}
+                onClick={() => setActiveTab(t.id as typeof activeTab)}
                 className={`flex items-center gap-2 px-5 py-3.5 text-xs font-bold tracking-widest uppercase border-b-2 transition-colors shrink-0 ${
                   active
                     ? "border-lime text-lime bg-cream/5"
@@ -294,7 +317,9 @@ function AdminPage() {
               Total Preorders
               <ShoppingBag className="w-4 h-4 text-forest" />
             </div>
-            <div className="font-varsity text-2xl text-forest-deep">{analytics.totalOrders} Orders</div>
+            <div className="font-varsity text-2xl text-forest-deep">
+              {analytics.totalOrders} Orders
+            </div>
             <div className="text-xs text-muted-foreground font-mono">
               {analytics.totalTeesCount} Tees reserved
             </div>
@@ -321,9 +346,7 @@ function AdminPage() {
             <div className="font-varsity text-2xl text-forest-deep">
               {coupons.filter((c) => c.active).length} Active
             </div>
-            <div className="text-xs text-forest font-bold font-mono">
-              AMA & KOFI live tracking
-            </div>
+            <div className="text-xs text-forest font-bold font-mono">AMA & KOFI live tracking</div>
           </div>
 
           <div className="bg-forest-deep text-cream border-2 border-forest-deep p-4 space-y-1 col-span-2 lg:col-span-1">
@@ -331,9 +354,9 @@ function AdminPage() {
               Preorder Window
               <Clock className="w-4 h-4 text-lime" />
             </div>
-            <div className="font-varsity text-xl text-lime">CLOSES JULY 31</div>
+            <div className="font-varsity text-xl text-lime">CLOSES SEPT 30</div>
             <div className="text-[10px] tracking-wider uppercase text-cream/80">
-              Ships August 2026
+              Ships October 2026
             </div>
           </div>
         </div>
@@ -348,17 +371,21 @@ function AdminPage() {
                     <TrendingUp className="w-5 h-5 text-forest" /> LIVE REVENUE TIMELINE
                   </h2>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Real-time daily preorder revenue (GH₵) accumulated across July 2026.
+                    Real-time daily preorder revenue (GH₵) accumulated across the preorder window.
                   </p>
                 </div>
                 <div className="flex items-center gap-2 text-xs font-bold font-mono bg-lime/40 border border-forest-deep px-3 py-1.5">
-                  Discounts Granted: GH₵{analytics.totalDiscountGHS.toFixed(2)} (${analytics.totalDiscountUSD.toFixed(2)})
+                  Discounts Granted: GH₵{analytics.totalDiscountGHS.toFixed(2)} ($
+                  {analytics.totalDiscountUSD.toFixed(2)})
                 </div>
               </div>
 
               <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={analytics.timelineData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <AreaChart
+                    data={analytics.timelineData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
                     <defs>
                       <linearGradient id="colorGHS" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#2d5a3f" stopOpacity={0.8} />
@@ -370,9 +397,21 @@ function AdminPage() {
                     <YAxis stroke="#64748b" fontSize={12} unit=" GH₵" />
                     <Tooltip
                       formatter={(val: number) => [`GH₵${val.toLocaleString()}`, "Revenue"]}
-                      contentStyle={{ backgroundColor: "#1b3323", color: "#fbf9f4", borderRadius: "0px", border: "2px solid #1b3323" }}
+                      contentStyle={{
+                        backgroundColor: "#1b3323",
+                        color: "#fbf9f4",
+                        borderRadius: "0px",
+                        border: "2px solid #1b3323",
+                      }}
                     />
-                    <Area type="monotone" dataKey="revenueGHS" stroke="#2d5a3f" strokeWidth={3} fillOpacity={1} fill="url(#colorGHS)" />
+                    <Area
+                      type="monotone"
+                      dataKey="revenueGHS"
+                      stroke="#2d5a3f"
+                      strokeWidth={3}
+                      fillOpacity={1}
+                      fill="url(#colorGHS)"
+                    />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -398,11 +437,18 @@ function AdminPage() {
                       <YAxis stroke="#64748b" fontSize={12} allowDecimals={false} />
                       <Tooltip
                         formatter={(val: number) => [`${val} Units`, "Quantity"]}
-                        contentStyle={{ backgroundColor: "#1b3323", color: "#fbf9f4", border: "2px solid #1b3323" }}
+                        contentStyle={{
+                          backgroundColor: "#1b3323",
+                          color: "#fbf9f4",
+                          border: "2px solid #1b3323",
+                        }}
                       />
                       <Bar dataKey="count" fill="#2d5a3f" radius={[4, 4, 0, 0]}>
                         {analytics.sizeBreakdown.map((_, index) => (
-                          <Cell key={`cell-${index}`} fill={index === 1 || index === 2 ? "#2d5a3f" : "#4a7c59"} />
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={index === 1 || index === 2 ? "#2d5a3f" : "#4a7c59"}
+                          />
                         ))}
                       </Bar>
                     </BarChart>
@@ -426,25 +472,36 @@ function AdminPage() {
                     <Tag className="w-5 h-5 text-forest" /> INFLUENCER & COUPON TRACKING
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Live performance metrics for promo codes <strong>AMA</strong>, <strong>KOFI</strong>, etc.
+                    Live performance metrics for promo codes <strong>AMA</strong>,{" "}
+                    <strong>KOFI</strong>, etc.
                   </p>
                 </div>
 
                 <div className="space-y-4">
                   {analytics.couponPerformance.map((cp) => {
-                    const pct = analytics.totalRevenueGHS > 0 ? Math.round((cp.revenueGHS / analytics.totalRevenueGHS) * 100) : 0;
+                    const pct =
+                      analytics.totalRevenueGHS > 0
+                        ? Math.round((cp.revenueGHS / analytics.totalRevenueGHS) * 100)
+                        : 0;
                     const hasCommission = cp.commissionRate > 0 && cp.commissionGHS > 0;
                     return (
-                      <div key={cp.code} className={`border-2 p-3.5 space-y-2 ${hasCommission ? "border-lime bg-lime/10" : "border-forest-deep bg-cream/40"}`}>
+                      <div
+                        key={cp.code}
+                        className={`border-2 p-3.5 space-y-2 ${hasCommission ? "border-lime bg-lime/10" : "border-forest-deep bg-cream/40"}`}
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="font-varsity text-base px-2 py-0.5 bg-forest-deep text-cream">
                               {cp.code}
                             </span>
                             <div>
-                              <div className="text-xs font-bold text-forest-deep">{cp.influencer}</div>
+                              <div className="text-xs font-bold text-forest-deep">
+                                {cp.influencer}
+                              </div>
                               {cp.commissionRate > 0 && (
-                                <div className="text-[10px] text-forest font-mono">{cp.commissionRate}% commission rate</div>
+                                <div className="text-[10px] text-forest font-mono">
+                                  {cp.commissionRate}% commission rate
+                                </div>
                               )}
                             </div>
                           </div>
@@ -454,14 +511,18 @@ function AdminPage() {
                             </div>
                             {hasCommission && (
                               <div className="text-[11px] font-bold text-forest bg-lime px-2 py-0.5 mt-0.5 text-right">
-                                Owes: GH₵{cp.commissionGHS.toFixed(2)} (${cp.commissionUSD.toFixed(2)})
+                                Owes: GH₵{cp.commissionGHS.toFixed(2)} ($
+                                {cp.commissionUSD.toFixed(2)})
                               </div>
                             )}
                           </div>
                         </div>
 
                         <div className="w-full bg-cream border border-forest-deep h-3">
-                          <div className="bg-forest-deep h-full transition-all" style={{ width: `${pct}%` }} />
+                          <div
+                            className="bg-forest-deep h-full transition-all"
+                            style={{ width: `${pct}%` }}
+                          />
                         </div>
 
                         <div className="flex justify-between text-[11px] text-muted-foreground font-mono pt-1">
@@ -495,7 +556,8 @@ function AdminPage() {
                   onClick={() => exportOrdersToCSV(filteredOrders)}
                   className="bg-forest-deep text-cream px-3 py-2 text-xs font-bold tracking-wider uppercase border border-forest-deep flex items-center gap-1.5 hover:bg-forest transition-colors"
                 >
-                  <Download className="w-3.5 h-3.5 text-lime" /> Export CSV ({filteredOrders.length})
+                  <Download className="w-3.5 h-3.5 text-lime" /> Export CSV ({filteredOrders.length}
+                  )
                 </button>
 
                 <div className="relative flex-1 sm:w-60">
@@ -568,17 +630,30 @@ function AdminPage() {
                           </div>
                         </td>
                         <td className="p-3">
-                          <div className="font-bold">{o.customer.firstName} {o.customer.lastName}</div>
-                          <div className="text-[10px] text-muted-foreground">{o.customer.email}</div>
-                          <div className="text-[10px] text-muted-foreground font-mono">{o.customer.phone}</div>
+                          <div className="font-bold">
+                            {o.customer.firstName} {o.customer.lastName}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {o.customer.email}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground font-mono">
+                            {o.customer.phone}
+                          </div>
                         </td>
                         <td className="p-3">
-                          <div>{o.customer.city}, {o.customer.state}</div>
-                          <div className="text-[10px] text-muted-foreground">{o.customer.country}</div>
+                          <div>
+                            {o.customer.city}, {o.customer.state}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {o.customer.country}
+                          </div>
                         </td>
                         <td className="p-3">
                           {o.items.map((i, idx) => (
-                            <span key={idx} className="inline-block bg-cream border border-forest-deep px-1.5 py-0.5 text-[11px] font-bold mr-1 mb-1">
+                            <span
+                              key={idx}
+                              className="inline-block bg-cream border border-forest-deep px-1.5 py-0.5 text-[11px] font-bold mr-1 mb-1"
+                            >
                               {i.qty}× {i.size}
                             </span>
                           ))}
@@ -603,7 +678,9 @@ function AdminPage() {
                         <td className="p-3 space-y-1">
                           <select
                             value={o.status}
-                            onChange={(e) => ordersStore.updateStatus(o.id, e.target.value as OrderStatus)}
+                            onChange={(e) =>
+                              ordersStore.updateStatus(o.id, e.target.value as OrderStatus)
+                            }
                             className={`border px-2 py-1 text-[11px] font-bold uppercase rounded-none block ${
                               o.status === "Paid"
                                 ? "bg-amber-100 text-amber-900 border-amber-400"
@@ -653,9 +730,12 @@ function AdminPage() {
 
               <div className="space-y-4">
                 {coupons.map((c) => {
-                  const ordersForCoupon = orders.filter((o) => o.couponCode?.toUpperCase() === c.code.toUpperCase());
+                  const ordersForCoupon = orders.filter(
+                    (o) => o.couponCode?.toUpperCase() === c.code.toUpperCase(),
+                  );
                   const revenueGHS = ordersForCoupon.reduce((sum, o) => sum + o.totalGHS, 0);
-                  const commissionOwedGHS = Math.round((revenueGHS * ((c.commissionRate ?? 0) / 100)) * 100) / 100;
+                  const commissionOwedGHS =
+                    Math.round(revenueGHS * ((c.commissionRate ?? 0) / 100) * 100) / 100;
 
                   return (
                     <div key={c.code} className="border-2 border-forest-deep p-4 bg-cream/40">
@@ -673,18 +753,26 @@ function AdminPage() {
                                 {c.commissionRate}% Commission
                               </span>
                             )}
-                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 border ${c.active ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-red-100 text-red-800 border-red-300"}`}>
+                            <span
+                              className={`text-[10px] font-bold uppercase px-2 py-0.5 border ${c.active ? "bg-emerald-100 text-emerald-800 border-emerald-300" : "bg-red-100 text-red-800 border-red-300"}`}
+                            >
                               {c.active ? "Active" : "Inactive"}
                             </span>
                           </div>
-                          <div className="text-xs font-bold text-forest-deep">{c.influencerName}</div>
+                          <div className="text-xs font-bold text-forest-deep">
+                            {c.influencerName}
+                          </div>
                           <div className="text-xs text-muted-foreground">{c.description}</div>
                         </div>
 
                         <div className="flex items-center gap-6 sm:border-l-2 sm:border-forest-deep/20 sm:pl-6 shrink-0">
                           <div className="text-right">
-                            <div className="font-varsity text-lg text-forest-deep">GH₵{revenueGHS.toLocaleString()}</div>
-                            <div className="text-xs font-mono text-muted-foreground">{ordersForCoupon.length} orders driven</div>
+                            <div className="font-varsity text-lg text-forest-deep">
+                              GH₵{revenueGHS.toLocaleString()}
+                            </div>
+                            <div className="text-xs font-mono text-muted-foreground">
+                              {ordersForCoupon.length} orders driven
+                            </div>
                             {commissionOwedGHS > 0 && (
                               <div className="mt-1 text-[11px] font-bold text-forest bg-lime px-2 py-0.5">
                                 Commission Due: GH₵{commissionOwedGHS.toFixed(2)}
@@ -765,7 +853,7 @@ function AdminPage() {
                     </label>
                     <select
                       value={newType}
-                      onChange={(e) => setNewType(e.target.value as any)}
+                      onChange={(e) => setNewType(e.target.value as typeof newType)}
                       className="w-full border-2 border-forest-deep p-2.5 text-xs font-bold bg-cream"
                     >
                       <option value="PERCENT">% Percentage</option>
@@ -786,7 +874,9 @@ function AdminPage() {
                     onChange={(e) => setNewCommissionRate(Number(e.target.value))}
                     className="w-full border-2 border-forest-deep p-2.5 text-xs focus:outline-none"
                   />
-                  <p className="text-[10px] text-muted-foreground mt-1">e.g. 10 = influencer earns 10% of every sale they drive. Set 0 for brand promos.</p>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    e.g. 10 = influencer earns 10% of every sale they drive. Set 0 for brand promos.
+                  </p>
                 </div>
 
                 <div>
@@ -889,8 +979,12 @@ function AdminPage() {
           <div className="bg-cream border-2 border-forest-deep w-full max-w-xl max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
             <div className="flex items-center justify-between border-b-2 border-forest-deep pb-4">
               <div>
-                <div className="text-[10px] tracking-widest uppercase text-muted-foreground">PREORDER DETAILS</div>
-                <h3 className="font-mono text-xl font-bold text-forest-deep">{selectedOrder.ref}</h3>
+                <div className="text-[10px] tracking-widest uppercase text-muted-foreground">
+                  PREORDER DETAILS
+                </div>
+                <h3 className="font-mono text-xl font-bold text-forest-deep">
+                  {selectedOrder.ref}
+                </h3>
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
@@ -903,7 +997,9 @@ function AdminPage() {
             <div className="grid grid-cols-2 gap-4 text-xs">
               <div className="bg-card border border-forest-deep p-3 space-y-1">
                 <div className="font-varsity text-forest-deep">CUSTOMER</div>
-                <div className="font-bold">{selectedOrder.customer.firstName} {selectedOrder.customer.lastName}</div>
+                <div className="font-bold">
+                  {selectedOrder.customer.firstName} {selectedOrder.customer.lastName}
+                </div>
                 <div>{selectedOrder.customer.email}</div>
                 <div className="font-mono">{selectedOrder.customer.phone}</div>
               </div>
@@ -911,7 +1007,10 @@ function AdminPage() {
               <div className="bg-card border border-forest-deep p-3 space-y-1">
                 <div className="font-varsity text-forest-deep">SHIPPING ADDRESS</div>
                 <div>{selectedOrder.customer.address}</div>
-                <div>{selectedOrder.customer.city}, {selectedOrder.customer.state} {selectedOrder.customer.zip}</div>
+                <div>
+                  {selectedOrder.customer.city}, {selectedOrder.customer.state}{" "}
+                  {selectedOrder.customer.zip}
+                </div>
                 <div>{selectedOrder.customer.country}</div>
               </div>
             </div>
@@ -921,8 +1020,12 @@ function AdminPage() {
               <div className="space-y-2">
                 {selectedOrder.items.map((i, idx) => (
                   <div key={idx} className="flex justify-between items-center text-xs">
-                    <span className="font-bold">{i.name} — Size {i.size} ×{i.qty}</span>
-                    <span>${i.priceUSD * i.qty} (GH₵{i.priceGHS * i.qty})</span>
+                    <span className="font-bold">
+                      {i.name} — Size {i.size} ×{i.qty}
+                    </span>
+                    <span>
+                      ${i.priceUSD * i.qty} (GH₵{i.priceGHS * i.qty})
+                    </span>
                   </div>
                 ))}
               </div>
@@ -931,17 +1034,24 @@ function AdminPage() {
             <div className="space-y-1 text-xs border-t border-forest-deep pt-3">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>GH₵{selectedOrder.subtotalGHS} (${selectedOrder.subtotalUSD})</span>
+                <span>
+                  GH₵{selectedOrder.subtotalGHS} (${selectedOrder.subtotalUSD})
+                </span>
               </div>
               {selectedOrder.discountGHS > 0 && (
                 <div className="flex justify-between text-forest font-bold">
                   <span>Coupon Discount ({selectedOrder.couponCode})</span>
-                  <span>−GH₵{selectedOrder.discountGHS} (−${selectedOrder.discountUSD.toFixed(2)})</span>
+                  <span>
+                    −GH₵{selectedOrder.discountGHS} (−${selectedOrder.discountUSD.toFixed(2)})
+                  </span>
                 </div>
               )}
               <div className="flex justify-between font-varsity text-base font-bold text-forest-deep pt-2 border-t border-forest-deep/20">
                 <span>Total Paid</span>
-                <span>GH₵{selectedOrder.totalGHS.toLocaleString()} (${selectedOrder.totalUSD.toFixed(2)})</span>
+                <span>
+                  GH₵{selectedOrder.totalGHS.toLocaleString()} (${selectedOrder.totalUSD.toFixed(2)}
+                  )
+                </span>
               </div>
             </div>
 

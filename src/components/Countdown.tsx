@@ -45,10 +45,14 @@ export function Countdown({ iso, compact = false }: { iso: string; compact?: boo
       <div className="inline-flex items-center gap-4 md:gap-6 bg-forest-deep px-5 py-3 border-2 border-forest-deep">
         {(["Days", "Hrs", "Min", "Sec"] as const).map((label, i) => (
           <span key={label} className="flex flex-col items-center">
-            <span className={`font-varsity ${compact ? "text-2xl" : "text-4xl md:text-5xl"} leading-none text-cream`}>
+            <span
+              className={`font-varsity ${compact ? "text-2xl" : "text-4xl md:text-5xl"} leading-none text-cream`}
+            >
               --
             </span>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-cream/70 mt-1">{label}</span>
+            <span className="text-[10px] tracking-[0.2em] uppercase text-cream/70 mt-1">
+              {label}
+            </span>
             {i < 3 && <></>}
           </span>
         ))}

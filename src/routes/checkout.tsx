@@ -11,7 +11,7 @@ const PAYSTACK_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY as string;
 if (!PAYSTACK_KEY) {
   console.error(
     "[Clovermade] VITE_PAYSTACK_PUBLIC_KEY is not set. " +
-    "Add it to your .env file (pk_test_... for test, pk_live_... for production)."
+      "Add it to your .env file (pk_test_... for test, pk_live_... for production).",
   );
 }
 
@@ -85,7 +85,9 @@ function CheckoutPage() {
   const [form, setForm] = useState<FormValues>(DEFAULT_FORM);
 
   const [couponInput, setCouponInput] = useState("");
-  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(
+    null,
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -142,12 +144,32 @@ function CheckoutPage() {
         ref,
         metadata: {
           custom_fields: [
-            { display_name: "Order Items", variable_name: "items", value: items.map((i) => `${i.name} ×${i.qty} (${i.size})`).join(", ") },
-            { display_name: "Applied Coupon", variable_name: "coupon", value: appliedCoupon ? `${appliedCoupon.code} (${appliedCoupon.value}%)` : "None" },
-            { display_name: "Discount Amount", variable_name: "discount", value: `GH₵${totals.discountGHS} ($${totals.discountUSD})` },
-            { display_name: "Shipping Name", variable_name: "name", value: `${form.firstName} ${form.lastName}` },
+            {
+              display_name: "Order Items",
+              variable_name: "items",
+              value: items.map((i) => `${i.name} ×${i.qty} (${i.size})`).join(", "),
+            },
+            {
+              display_name: "Applied Coupon",
+              variable_name: "coupon",
+              value: appliedCoupon ? `${appliedCoupon.code} (${appliedCoupon.value}%)` : "None",
+            },
+            {
+              display_name: "Discount Amount",
+              variable_name: "discount",
+              value: `GH₵${totals.discountGHS} ($${totals.discountUSD})`,
+            },
+            {
+              display_name: "Shipping Name",
+              variable_name: "name",
+              value: `${form.firstName} ${form.lastName}`,
+            },
             { display_name: "Phone Number", variable_name: "phone", value: form.phone },
-            { display_name: "Shipping Address", variable_name: "address", value: `${form.address}, ${form.city}, ${form.state} ${form.zip}, ${form.country}` },
+            {
+              display_name: "Shipping Address",
+              variable_name: "address",
+              value: `${form.address}, ${form.city}, ${form.state} ${form.zip}, ${form.country}`,
+            },
           ],
         },
         callback(response) {
@@ -199,12 +221,12 @@ function CheckoutPage() {
       handler.openIframe();
     } catch (err) {
       clearTimeout(timer);
-      setPaystackErrorMsg(`Paystack Error: ${String(err)}. Please check your VITE_PAYSTACK_PUBLIC_KEY in .env.`);
+      setPaystackErrorMsg(
+        `Paystack Error: ${String(err)}. Please check your VITE_PAYSTACK_PUBLIC_KEY in .env.`,
+      );
       setLoading(false);
     }
   };
-
-
 
   // ── Success screen ────────────────────────────────────────────────────────
 
@@ -215,10 +237,15 @@ function CheckoutPage() {
         <div className="mt-4 text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
           Preorder Confirmed
         </div>
-        <h1 className="font-hero text-5xl md:text-6xl text-forest-deep mt-2">YOU'RE IN THE PURSUIT.</h1>
+        <h1 className="font-hero text-5xl md:text-6xl text-forest-deep mt-2">
+          YOU'RE IN THE PURSUIT.
+        </h1>
         <p className="mt-4 text-muted-foreground max-w-md mx-auto text-sm">
-          Thank you, <strong className="text-foreground">{form.firstName}</strong>. Your preorder is secured.{" "}
-          <strong className="text-forest-deep">Estimated ship window: {PRODUCT.shipEstimate}.</strong>{" "}
+          Thank you, <strong className="text-foreground">{form.firstName}</strong>. Your preorder is
+          secured.{" "}
+          <strong className="text-forest-deep">
+            Estimated ship window: {PRODUCT.shipEstimate}.
+          </strong>{" "}
           We'll email tracking the day yours goes out.
         </p>
         <div className="mt-4 text-xs text-muted-foreground font-mono tracking-widest">
@@ -227,7 +254,7 @@ function CheckoutPage() {
         <div className="mt-8 bg-lime border-2 border-forest-deep p-4 text-left inline-block">
           <div className="font-varsity text-sm">WHAT HAPPENS NEXT</div>
           <ol className="mt-2 text-xs tracking-widest uppercase space-y-1 text-forest-deep/80">
-            <li>1 · Preorder window closes July 31</li>
+            <li>1 · Preorder window closes September 30</li>
             <li>2 · Tees go into production</li>
             <li>3 · Ships {PRODUCT.shipEstimate.toLowerCase()}</li>
           </ol>
@@ -260,9 +287,9 @@ function CheckoutPage() {
             <div>
               <strong className="font-bold">Paystack Not Configured</strong>
               <p className="mt-1">
-                <code className="bg-red-100 px-1 py-0.5 font-mono">VITE_PAYSTACK_PUBLIC_KEY</code> is
-                missing from your <code className="bg-red-100 px-1 py-0.5 font-mono">.env</code> file. Add
-                it and restart the dev server to test live payments.
+                <code className="bg-red-100 px-1 py-0.5 font-mono">VITE_PAYSTACK_PUBLIC_KEY</code>{" "}
+                is missing from your <code className="bg-red-100 px-1 py-0.5 font-mono">.env</code>{" "}
+                file. Add it and restart the dev server to test live payments.
               </p>
             </div>
           </div>
@@ -295,8 +322,10 @@ function CheckoutPage() {
             <div>
               <strong className="font-bold">Paystack Key Missing</strong>
               <p className="mt-1">
-                Please set <code className="bg-red-100 px-1 font-mono">VITE_PAYSTACK_PUBLIC_KEY</code> in
-                your <code className="bg-red-100 px-1 font-mono">.env</code> file to enable payment processing.
+                Please set{" "}
+                <code className="bg-red-100 px-1 font-mono">VITE_PAYSTACK_PUBLIC_KEY</code> in your{" "}
+                <code className="bg-red-100 px-1 font-mono">.env</code> file to enable payment
+                processing.
               </p>
             </div>
           </div>
@@ -456,11 +485,14 @@ function CheckoutPage() {
             className="btn-drop w-full !py-4 text-base flex items-center justify-center gap-2"
           >
             <Lock className="w-4 h-4" />
-            {loading ? "Launching Payment..." : `Pay GH₵${totals.finalGHS.toLocaleString()} ($${totals.finalUSD.toFixed(2)}) with Paystack`}
+            {loading
+              ? "Launching Payment..."
+              : `Pay GH₵${totals.finalGHS.toLocaleString()} ($${totals.finalUSD.toFixed(2)}) with Paystack`}
           </button>
 
           <p className="text-center text-xs text-muted-foreground flex items-center justify-center gap-1.5">
-            <Lock className="w-3 h-3 text-forest" /> Secured by Paystack. Card, Mobile Money, and Apple Pay accepted.
+            <Lock className="w-3 h-3 text-forest" /> Secured by Paystack. Card, Mobile Money, and
+            Apple Pay accepted.
           </p>
         </form>
       </div>
@@ -472,7 +504,11 @@ function CheckoutPage() {
         <div className="divide-y divide-forest-deep/20">
           {items.map((it) => (
             <div key={it.id + it.size} className="py-3 flex gap-3 items-center">
-              <img src={it.image} alt="" className="w-14 h-16 object-cover border border-border shrink-0" />
+              <img
+                src={it.image}
+                alt=""
+                className="w-14 h-16 object-cover border border-border shrink-0"
+              />
               <div className="flex-1">
                 <div className="font-varsity text-sm">{it.name}</div>
                 <div className="text-[10px] tracking-widest uppercase text-muted-foreground">
@@ -481,7 +517,9 @@ function CheckoutPage() {
               </div>
               <div className="font-bold text-sm text-right">
                 <div>${it.price * it.qty}</div>
-                <div className="text-[10px] text-muted-foreground">GH₵{PRODUCT.priceGHS * it.qty}</div>
+                <div className="text-[10px] text-muted-foreground">
+                  GH₵{PRODUCT.priceGHS * it.qty}
+                </div>
               </div>
             </div>
           ))}
@@ -498,7 +536,9 @@ function CheckoutPage() {
             <div className="flex items-center justify-between bg-lime/40 border border-forest-deep p-2 text-xs font-medium">
               <div className="flex items-center gap-1.5 text-forest-deep font-bold">
                 <span>{appliedCoupon.code}</span>
-                <span className="text-[10px] font-normal text-forest-deep/80">({appliedCoupon.value}% OFF)</span>
+                <span className="text-[10px] font-normal text-forest-deep/80">
+                  ({appliedCoupon.value}% OFF)
+                </span>
               </div>
               <button
                 onClick={() => {
@@ -519,13 +559,18 @@ function CheckoutPage() {
                 onChange={(e) => setCouponInput(e.target.value)}
                 className="flex-1 border border-forest-deep px-2.5 py-1.5 text-xs font-mono tracking-wider focus:outline-none uppercase"
               />
-              <button type="submit" className="bg-forest-deep text-cream text-xs px-3 font-bold hover:bg-forest transition-colors">
+              <button
+                type="submit"
+                className="bg-forest-deep text-cream text-xs px-3 font-bold hover:bg-forest transition-colors"
+              >
                 Apply
               </button>
             </form>
           )}
           {couponMsg && (
-            <p className={`text-[11px] ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}>
+            <p
+              className={`text-[11px] ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}
+            >
               {couponMsg.text}
             </p>
           )}
@@ -559,13 +604,15 @@ function CheckoutPage() {
             <span className="text-lg">Total Due</span>
             <div className="text-right">
               <div className="text-2xl text-forest-deep">GH₵{totals.finalGHS.toLocaleString()}</div>
-              <div className="text-xs font-sans text-muted-foreground font-normal">Approx. ${totals.finalUSD.toFixed(2)} USD</div>
+              <div className="text-xs font-sans text-muted-foreground font-normal">
+                Approx. ${totals.finalUSD.toFixed(2)} USD
+              </div>
             </div>
           </div>
         </div>
 
         <div className="bg-lime border-2 border-forest-deep p-3 text-xs tracking-widest uppercase font-bold">
-          Ships August 2026 · Limited Preorder
+          Ships October 2026 · Limited Preorder
         </div>
       </aside>
     </section>

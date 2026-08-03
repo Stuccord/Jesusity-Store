@@ -32,22 +32,22 @@ function Legal() {
       </div>
 
       <Block title="Preorder Terms">
-        Every Jesusity drop is made-to-order during a fixed preorder window. Your card is
-        authorized at checkout and charged when the preorder window closes and production begins.
-        Preorder cancellations are accepted anytime before the window closes. After that, all
-        sales are final for that drop.
+        Every Jesusity drop is made-to-order during a fixed preorder window. Your card is authorized
+        at checkout and charged when the preorder window closes and production begins. Preorder
+        cancellations are accepted anytime before the window closes. After that, all sales are final
+        for that drop.
       </Block>
 
       <Block title="Shipping">
-        Drop 001 ships August 2026. Every buyer receives a tracking email the day their order
-        goes out. US shipping is a flat rate calculated at checkout. We ship internationally —
+        Drop 001 ships October 2026. Every buyer receives a tracking email the day their order goes
+        out. US shipping is a flat rate calculated at checkout. We ship internationally —
         international rates and duties are the buyer's responsibility.
       </Block>
 
       <Block title="Returns & Exchanges">
         Defective or misprinted items are replaced free of charge within 14 days of delivery — email
-        us with your order number and a photo. Because tees are made-to-order for each preorder
-        run, sizing exchanges after the drop closes are not guaranteed and are subject to available
+        us with your order number and a photo. Because tees are made-to-order for each preorder run,
+        sizing exchanges after the drop closes are not guaranteed and are subject to available
         overrun stock.
       </Block>
 
@@ -57,7 +57,11 @@ function Legal() {
       </Block>
 
       <Block title="Contact">
-        For anything: <a className="underline" href="mailto:hello@clovermadestudios.com">hello@clovermadestudios.com</a>.
+        For anything:{" "}
+        <a className="underline" href="mailto:hello@clovermadestudios.com">
+          hello@clovermadestudios.com
+        </a>
+        .
       </Block>
     </section>
   );

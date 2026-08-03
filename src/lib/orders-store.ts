@@ -47,8 +47,6 @@ const STORAGE_KEY = "jesusity-orders-v2"; // v2 clears stale seed data from v1
 let orders: Order[] = [];
 const listeners = new Set<() => void>();
 
-
-
 function load() {
   if (typeof window === "undefined") return;
   try {
@@ -96,7 +94,13 @@ export const ordersStore = {
   },
   verifyOrderWithPaystack(id: string, channel?: string) {
     orders = orders.map((o) =>
-      o.id === id ? { ...o, verifiedWithPaystack: true, paymentChannel: channel || o.paymentChannel || "Paystack Verified" } : o
+      o.id === id
+        ? {
+            ...o,
+            verifiedWithPaystack: true,
+            paymentChannel: channel || o.paymentChannel || "Paystack Verified",
+          }
+        : o,
     );
     persist();
     emit();
@@ -110,7 +114,7 @@ export const ordersStore = {
     const fresh = incoming.filter((o) => !existingRefs.has(o.ref));
     if (fresh.length === 0) return 0;
     orders = [...fresh, ...orders].sort(
-      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
     persist();
     emit();
@@ -126,7 +130,7 @@ export function useOrders() {
   const snap = useSyncExternalStore(
     (cb) => ordersStore.subscribe(cb),
     () => orders,
-    () => [] as Order[]
+    () => [] as Order[],
   );
   useEffect(() => {
     ordersStore.hydrate();
@@ -175,7 +179,10 @@ export function exportOrdersToCSV(ordersList: Order[]) {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.setAttribute("href", url);
-  link.setAttribute("download", `Clovermade_Preorders_${new Date().toISOString().slice(0, 10)}.csv`);
+  link.setAttribute(
+    "download",
+    `Clovermade_Preorders_${new Date().toISOString().slice(0, 10)}.csv`,
+  );
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);
@@ -190,7 +197,7 @@ export function computeAnalytics(ordersList: Order[]) {
 
   const totalTeesCount = ordersList.reduce(
     (sum, o) => sum + o.items.reduce((iSum, i) => iSum + i.qty, 0),
-    0
+    0,
   );
 
   const avgOrderValueUSD = totalOrders > 0 ? totalRevenueUSD / totalOrders : 0;
@@ -231,10 +238,50 @@ export function computeAnalytics(ordersList: Order[]) {
       commissionUSD: number;
     }
   > = {
-    AMA: { code: "AMA", influencer: "Ama Mensah", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 10, commissionGHS: 0, commissionUSD: 0 },
-    KOFI: { code: "KOFI", influencer: "Kofi Owusu", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 10, commissionGHS: 0, commissionUSD: 0 },
-    JESUSITY10: { code: "JESUSITY10", influencer: "Clovermade Studio", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 0, commissionGHS: 0, commissionUSD: 0 },
-    DIRECT: { code: "DIRECT", influencer: "Direct / Organic", orders: 0, revenueGHS: 0, revenueUSD: 0, discountGHS: 0, commissionRate: 0, commissionGHS: 0, commissionUSD: 0 },
+    AMA: {
+      code: "AMA",
+      influencer: "Ama Mensah",
+      orders: 0,
+      revenueGHS: 0,
+      revenueUSD: 0,
+      discountGHS: 0,
+      commissionRate: 10,
+      commissionGHS: 0,
+      commissionUSD: 0,
+    },
+    KOFI: {
+      code: "KOFI",
+      influencer: "Kofi Owusu",
+      orders: 0,
+      revenueGHS: 0,
+      revenueUSD: 0,
+      discountGHS: 0,
+      commissionRate: 10,
+      commissionGHS: 0,
+      commissionUSD: 0,
+    },
+    JESUSITY10: {
+      code: "JESUSITY10",
+      influencer: "Clovermade Studio",
+      orders: 0,
+      revenueGHS: 0,
+      revenueUSD: 0,
+      discountGHS: 0,
+      commissionRate: 0,
+      commissionGHS: 0,
+      commissionUSD: 0,
+    },
+    DIRECT: {
+      code: "DIRECT",
+      influencer: "Direct / Organic",
+      orders: 0,
+      revenueGHS: 0,
+      revenueUSD: 0,
+      discountGHS: 0,
+      commissionRate: 0,
+      commissionGHS: 0,
+      commissionUSD: 0,
+    },
   };
 
   ordersList.forEach((o) => {
@@ -258,18 +305,24 @@ export function computeAnalytics(ordersList: Order[]) {
     couponStatsMap[key].revenueGHS += o.totalGHS;
     couponStatsMap[key].revenueUSD += o.totalUSD;
     couponStatsMap[key].discountGHS += o.discountGHS;
-    couponStatsMap[key].commissionGHS += Math.round((o.totalGHS * (rate / 100)) * 100) / 100;
-    couponStatsMap[key].commissionUSD += Math.round((o.totalUSD * (rate / 100)) * 100) / 100;
+    couponStatsMap[key].commissionGHS += Math.round(o.totalGHS * (rate / 100) * 100) / 100;
+    couponStatsMap[key].commissionUSD += Math.round(o.totalUSD * (rate / 100) * 100) / 100;
   });
 
   const couponPerformance = Object.values(couponStatsMap);
 
   // Timeline (group by date)
-  const timelineMap: Record<string, { date: string; revenueGHS: number; revenueUSD: number; orders: number }> = {};
+  const timelineMap: Record<
+    string,
+    { date: string; revenueGHS: number; revenueUSD: number; orders: number }
+  > = {};
   [...ordersList]
     .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
     .forEach((o) => {
-      const dateStr = new Date(o.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      const dateStr = new Date(o.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
       if (!timelineMap[dateStr]) {
         timelineMap[dateStr] = { date: dateStr, revenueGHS: 0, revenueUSD: 0, orders: 0 };
       }

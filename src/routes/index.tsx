@@ -75,7 +75,9 @@ function Hero() {
       <div className="mx-auto max-w-7xl px-4 md:px-8 py-12 md:py-20 grid gap-10 lg:grid-cols-[1.05fr_1fr] items-center">
         <div>
           <div className="inline-flex items-center gap-2 border-2 border-forest-deep px-3 py-1 text-[10px] font-bold tracking-[0.3em] uppercase">
-            <span className={`w-2 h-2 rounded-full ${isClosed ? "bg-muted-foreground" : "bg-lime animate-pulse"}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${isClosed ? "bg-muted-foreground" : "bg-lime animate-pulse"}`}
+            />
             {isClosed ? "Drop 001 · Closed" : "Drop 001 · Now on Preorder"}
           </div>
           <h1 className="mt-6 font-varsity text-[clamp(4rem,14vw,10rem)] leading-[0.85] text-forest-deep uppercase tracking-tight">
@@ -435,7 +437,7 @@ function FAQSection() {
   const items = [
     {
       q: "What does preorder mean and when will I get my order?",
-      a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on July 31, 2026, then we go straight into production. Estimated ship window: August 2026. You'll get a tracking email the day yours ships.",
+      a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on September 30, 2026, then we go straight into production. Estimated ship window: October 2026. You'll get a tracking email the day yours ships.",
     },
     {
       q: "Why isn't this just available to buy right now?",

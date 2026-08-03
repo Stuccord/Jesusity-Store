@@ -7,8 +7,7 @@ export const Route = createFileRoute("/reviews")({
       { title: "Reviews & Waitlist — Jesusity" },
       {
         name: "description",
-        content:
-          "See what the Jesusity waitlist is saying. Be one of the first to wear Drop 001.",
+        content: "See what the Jesusity waitlist is saying. Be one of the first to wear Drop 001.",
       },
       { property: "og:title", content: "Reviews & Waitlist — Jesusity" },
       { property: "og:description", content: "Voices from the endless pursuit." },

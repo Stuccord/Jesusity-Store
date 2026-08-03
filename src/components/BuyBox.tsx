@@ -76,7 +76,9 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className={`inline-flex items-center border-2 ${isClosed ? "border-border opacity-50" : "border-forest-deep"}`}>
+        <div
+          className={`inline-flex items-center border-2 ${isClosed ? "border-border opacity-50" : "border-forest-deep"}`}
+        >
           <button
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             disabled={isClosed}
@@ -108,11 +110,17 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
         </button>
       </div>
 
-      <div className={`border-2 px-4 py-3 ${isClosed ? "border-muted-foreground bg-muted" : "border-forest-deep bg-lime"}`}>
-        <div className={`font-varsity text-sm ${isClosed ? "text-muted-foreground" : "text-forest-deep"}`}>
+      <div
+        className={`border-2 px-4 py-3 ${isClosed ? "border-muted-foreground bg-muted" : "border-forest-deep bg-lime"}`}
+      >
+        <div
+          className={`font-varsity text-sm ${isClosed ? "text-muted-foreground" : "text-forest-deep"}`}
+        >
           {isClosed ? "This drop has closed" : PRODUCT.shipEstimate}
         </div>
-        <div className={`text-[11px] tracking-widest uppercase mt-1 ${isClosed ? "text-muted-foreground" : "text-forest-deep/70"}`}>
+        <div
+          className={`text-[11px] tracking-widest uppercase mt-1 ${isClosed ? "text-muted-foreground" : "text-forest-deep/70"}`}
+        >
           {isClosed ? "Drop 001 is no longer available for preorder" : "Preorder window closes in"}
         </div>
         <div className="mt-2">

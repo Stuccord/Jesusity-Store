@@ -26,7 +26,8 @@ export interface PaystackTx {
     email: string;
     phone: string | null;
   };
-  metadata: Record<string, unknown> | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metadata: Record<string, any> | null;
 }
 
 interface PaystackListResponse {
@@ -66,7 +67,8 @@ export const fetchPaystackTransactions = createServerFn({ method: "GET" }).handl
     if (!isValidSecretKey(secretKey)) {
       return {
         ok: false,
-        error: "PAYSTACK_SECRET_KEY is missing or invalid in .env. Please set your secret key (sk_live_...) in your .env file.",
+        error:
+          "PAYSTACK_SECRET_KEY is missing or invalid in .env. Please set your secret key (sk_live_...) in your .env file.",
       };
     }
 
@@ -83,7 +85,8 @@ export const fetchPaystackTransactions = createServerFn({ method: "GET" }).handl
         if (res1.status === 401) {
           return {
             ok: false,
-            error: "Paystack API returned 401 Invalid Key. Your secret key (sk_live_...) is incorrect or expired. Please verify your Secret Key at https://dashboard.paystack.com/#/settings/developer",
+            error:
+              "Paystack API returned 401 Invalid Key. Your secret key (sk_live_...) is incorrect or expired. Please verify your Secret Key at https://dashboard.paystack.com/#/settings/developer",
           };
         }
         const errBody = await res1.text().catch(() => "");
@@ -120,36 +123,41 @@ export const fetchPaystackTransactions = createServerFn({ method: "GET" }).handl
     } catch (err) {
       return { ok: false, error: String(err) };
     }
-  });
+  },
+);
 
 /**
  * Verify a single Paystack transaction reference.
  */
 export const verifyPaystackRef = createServerFn({ method: "GET" })
   .validator((payload: { reference: string; secretKey?: string }) => payload)
-  .handler(async ({ data: { reference, secretKey: secretKeyOverride } }): Promise<PaystackVerifyResponse> => {
-    let secretKey = getSecretKey().trim();
-    if (secretKeyOverride && isValidSecretKey(secretKeyOverride)) {
-      secretKey = secretKeyOverride.trim();
-    }
+  .handler(
+    async ({
+      data: { reference, secretKey: secretKeyOverride },
+    }): Promise<PaystackVerifyResponse> => {
+      let secretKey = getSecretKey().trim();
+      if (secretKeyOverride && isValidSecretKey(secretKeyOverride)) {
+        secretKey = secretKeyOverride.trim();
+      }
 
-    if (!isValidSecretKey(secretKey)) {
-      return { status: false, message: "PAYSTACK_SECRET_KEY not configured or invalid." };
-    }
+      if (!isValidSecretKey(secretKey)) {
+        return { status: false, message: "PAYSTACK_SECRET_KEY not configured or invalid." };
+      }
 
-    try {
-      const res = await fetch(
-        `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${secretKey}`,
-            "Content-Type": "application/json",
+      try {
+        const res = await fetch(
+          `https://api.paystack.co/transaction/verify/${encodeURIComponent(reference)}`,
+          {
+            headers: {
+              Authorization: `Bearer ${secretKey}`,
+              "Content-Type": "application/json",
+            },
           },
-        }
-      );
-      const json: PaystackVerifyResponse = await res.json();
-      return json;
-    } catch (err) {
-      return { status: false, message: String(err) };
-    }
-  });
+        );
+        const json: PaystackVerifyResponse = await res.json();
+        return json;
+      } catch (err) {
+        return { status: false, message: String(err) };
+      }
+    },
+  );

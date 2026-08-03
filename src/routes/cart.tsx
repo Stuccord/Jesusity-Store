@@ -21,7 +21,9 @@ function CartPage() {
   const totals = cartTotalsWithCoupon(items, PRODUCT.priceGHS, appliedCoupon);
 
   const [couponInput, setCouponInput] = useState("");
-  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(
+    null,
+  );
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,11 +63,17 @@ function CartPage() {
                   {PRODUCT.colorway} · Size {it.size}
                 </div>
                 <div className="mt-3 inline-flex items-center border-2 border-forest-deep">
-                  <button onClick={() => cart.updateQty(it.id, it.size, it.qty - 1)} className="p-2">
+                  <button
+                    onClick={() => cart.updateQty(it.id, it.size, it.qty - 1)}
+                    className="p-2"
+                  >
                     <Minus className="w-3 h-3" />
                   </button>
                   <span className="px-3 text-sm font-bold">{it.qty}</span>
-                  <button onClick={() => cart.updateQty(it.id, it.size, it.qty + 1)} className="p-2">
+                  <button
+                    onClick={() => cart.updateQty(it.id, it.size, it.qty + 1)}
+                    className="p-2"
+                  >
                     <Plus className="w-3 h-3" />
                   </button>
                 </div>
@@ -101,7 +109,9 @@ function CartPage() {
               <div className="flex items-center gap-2 text-forest-deep font-bold">
                 <Check className="w-4 h-4 text-forest" />
                 <span>{appliedCoupon.code} Applied</span>
-                <span className="text-[11px] font-normal text-forest-deep/80">({appliedCoupon.value}% OFF)</span>
+                <span className="text-[11px] font-normal text-forest-deep/80">
+                  ({appliedCoupon.value}% OFF)
+                </span>
               </div>
               <button
                 onClick={() => {
@@ -122,13 +132,18 @@ function CartPage() {
                 onChange={(e) => setCouponInput(e.target.value)}
                 className="flex-1 border-2 border-forest-deep px-3 py-2 text-xs font-mono tracking-wider focus:outline-none focus:ring-1 focus:ring-forest-deep uppercase"
               />
-              <button type="submit" className="bg-forest-deep text-cream text-xs px-4 font-bold hover:bg-forest transition-colors">
+              <button
+                type="submit"
+                className="bg-forest-deep text-cream text-xs px-4 font-bold hover:bg-forest transition-colors"
+              >
                 Apply
               </button>
             </form>
           )}
           {couponMsg && (
-            <p className={`text-xs flex items-center gap-1.5 ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}>
+            <p
+              className={`text-xs flex items-center gap-1.5 ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}
+            >
               {couponMsg.type === "error" && <AlertCircle className="w-3.5 h-3.5 shrink-0" />}
               {couponMsg.text}
             </p>
@@ -154,7 +169,9 @@ function CartPage() {
 
         <div className="border-t-2 border-forest-deep pt-4 flex justify-between items-baseline">
           <span className="font-varsity text-xl">Total</span>
-          <span className="font-varsity text-3xl text-forest-deep">${totals.finalUSD.toFixed(2)}</span>
+          <span className="font-varsity text-3xl text-forest-deep">
+            ${totals.finalUSD.toFixed(2)}
+          </span>
         </div>
 
         <div className="bg-lime border-2 border-forest-deep p-3 text-xs tracking-widest uppercase font-bold">

@@ -10,7 +10,9 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
   const totals = cartTotalsWithCoupon(items, PRODUCT.priceGHS, appliedCoupon);
 
   const [couponInput, setCouponInput] = useState("");
-  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [couponMsg, setCouponMsg] = useState<{ type: "success" | "error"; text: string } | null>(
+    null,
+  );
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +54,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
               <p className="text-sm text-muted-foreground mt-2 max-w-[240px]">
                 Nothing to pursue yet. The drop closes soon — grab yours before it's gone.
               </p>
-              <button
-                onClick={onClose}
-                className="btn-drop mt-6 !py-3 !px-6 text-xs"
-              >
+              <button onClick={onClose} className="btn-drop mt-6 !py-3 !px-6 text-xs">
                 Shop the Drop
               </button>
             </div>
@@ -112,14 +111,18 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                 <span className="flex items-center gap-1.5">
                   <Tag className="w-3.5 h-3.5 text-forest" /> Promo / Coupon Code
                 </span>
-                <span className="text-[10px] text-muted-foreground font-normal">Try: AMA, KOFI</span>
+                <span className="text-[10px] text-muted-foreground font-normal">
+                  Try: AMA, KOFI
+                </span>
               </div>
               {appliedCoupon ? (
                 <div className="flex items-center justify-between bg-lime/30 border border-forest-deep p-2 text-xs font-medium">
                   <div className="flex items-center gap-1.5 text-forest-deep font-bold">
                     <Check className="w-3.5 h-3.5 text-forest" />
                     <span>{appliedCoupon.code}</span>
-                    <span className="text-[10px] font-normal text-muted-foreground">({appliedCoupon.value}% OFF)</span>
+                    <span className="text-[10px] font-normal text-muted-foreground">
+                      ({appliedCoupon.value}% OFF)
+                    </span>
                   </div>
                   <button
                     onClick={() => {
@@ -140,13 +143,18 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                     onChange={(e) => setCouponInput(e.target.value)}
                     className="flex-1 border border-forest-deep px-2.5 py-1.5 text-xs font-mono tracking-wider focus:outline-none focus:ring-1 focus:ring-forest-deep uppercase"
                   />
-                  <button type="submit" className="bg-forest-deep text-cream text-xs px-3 font-bold hover:bg-forest transition-colors">
+                  <button
+                    type="submit"
+                    className="bg-forest-deep text-cream text-xs px-3 font-bold hover:bg-forest transition-colors"
+                  >
                     Apply
                   </button>
                 </form>
               )}
               {couponMsg && (
-                <p className={`text-[11px] flex items-center gap-1 ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}>
+                <p
+                  className={`text-[11px] flex items-center gap-1 ${couponMsg.type === "success" ? "text-forest font-semibold" : "text-destructive"}`}
+                >
                   {couponMsg.type === "error" && <AlertCircle className="w-3 h-3 shrink-0" />}
                   {couponMsg.text}
                 </p>

@@ -37,7 +37,13 @@ function ProductPage() {
   const isClosed = useIsPreorderClosed(PRODUCT.preorderCloseISO);
   return (
     <>
-      <Ticker text={isClosed ? "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER CLOSED  ✶" : "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER  ✶"} />
+      <Ticker
+        text={
+          isClosed
+            ? "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER CLOSED  ✶"
+            : "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER  ✶"
+        }
+      />
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-12 md:py-16 grid gap-10 lg:grid-cols-[1.1fr_1fr]">
         <div>
           <div className="border-2 border-forest-deep bg-card">
@@ -98,11 +104,11 @@ function ProductPage() {
             <h2 className="mt-2 font-varsity text-4xl">S · M · L · XL · XXL</h2>
             <div className="mt-4 grid grid-cols-5 gap-1 text-center">
               {[
-                ["S", "22\""],
-                ["M", "24\""],
-                ["L", "26\""],
-                ["XL", "28\""],
-                ["XXL", "30\""],
+                ["S", '22"'],
+                ["M", '24"'],
+                ["L", '26"'],
+                ["XL", '28"'],
+                ["XXL", '30"'],
               ].map(([s, w]) => (
                 <div key={s} className="border border-cream/30 p-3">
                   <div className="font-varsity">{s}</div>

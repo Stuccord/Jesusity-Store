@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Preorder the Jesusity Tee — an oversized heavyweight cotton faith-rooted streetwear drop from Clovermade Studios. Limited run. Ships August 2026.",
+          "Preorder the Jesusity Tee — an oversized heavyweight cotton faith-rooted streetwear drop from Clovermade Studios. Limited run. Ships October 2026.",
       },
       { name: "author", content: "Clovermade Studios" },
       { name: "theme-color", content: "#173628" },

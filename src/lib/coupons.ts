@@ -5,8 +5,8 @@ export type DiscountType = "PERCENT" | "FIXED";
 export interface Coupon {
   code: string;
   type: DiscountType;
-  value: number;           // discount: e.g. 15 for 15% off to the customer
-  commissionRate: number;  // influencer earns this % of the revenue they generate (e.g. 10 = 10%)
+  value: number; // discount: e.g. 15 for 15% off to the customer
+  commissionRate: number; // influencer earns this % of the revenue they generate (e.g. 10 = 10%)
   influencerName: string;
   description: string;
   active: boolean;
@@ -54,6 +54,7 @@ const DEFAULT_COUPONS: Coupon[] = [
 
 let coupons: Coupon[] = DEFAULT_COUPONS;
 let loaded = false;
+const listeners = new Set<() => void>();
 
 function load() {
   if (typeof window === "undefined") return;
@@ -63,7 +64,9 @@ function load() {
       const parsed: Coupon[] = JSON.parse(raw);
       // Ensure default coupons always exist
       const existingCodes = new Set(parsed.map((c) => c.code.toUpperCase()));
-      const missingDefaults = DEFAULT_COUPONS.filter((dc) => !existingCodes.has(dc.code.toUpperCase()));
+      const missingDefaults = DEFAULT_COUPONS.filter(
+        (dc) => !existingCodes.has(dc.code.toUpperCase()),
+      );
       coupons = [...parsed, ...missingDefaults];
     } else {
       coupons = DEFAULT_COUPONS;
@@ -134,13 +137,17 @@ export const couponStore = {
   },
   toggleActive(code: string) {
     const clean = code.trim().toUpperCase();
-    coupons = coupons.map((c) => (c.code.toUpperCase() === clean ? { ...c, active: !c.active } : c));
+    coupons = coupons.map((c) =>
+      c.code.toUpperCase() === clean ? { ...c, active: !c.active } : c,
+    );
     persist();
     emit();
   },
   incrementUsage(code: string) {
     const clean = code.trim().toUpperCase();
-    coupons = coupons.map((c) => (c.code.toUpperCase() === clean ? { ...c, usageCount: c.usageCount + 1 } : c));
+    coupons = coupons.map((c) =>
+      c.code.toUpperCase() === clean ? { ...c, usageCount: c.usageCount + 1 } : c,
+    );
     persist();
     emit();
   },
@@ -160,7 +167,7 @@ export function useCoupons() {
   const snap = useSyncExternalStore(
     (cb) => couponStore.subscribe(cb),
     () => coupons,
-    () => DEFAULT_COUPONS
+    () => DEFAULT_COUPONS,
   );
   useEffect(() => {
     couponStore.hydrate();
@@ -168,7 +175,11 @@ export function useCoupons() {
   return snap;
 }
 
-export function calculateCouponDiscount(coupon: Coupon | null, subtotalUSD: number, subtotalGHS: number) {
+export function calculateCouponDiscount(
+  coupon: Coupon | null,
+  subtotalUSD: number,
+  subtotalGHS: number,
+) {
   if (!coupon || !coupon.active) {
     return { discountUSD: 0, discountGHS: 0, finalUSD: subtotalUSD, finalGHS: subtotalGHS };
   }
@@ -177,8 +188,8 @@ export function calculateCouponDiscount(coupon: Coupon | null, subtotalUSD: numb
   let discountGHS = 0;
 
   if (coupon.type === "PERCENT") {
-    discountUSD = Math.round((subtotalUSD * (coupon.value / 100)) * 100) / 100;
-    discountGHS = Math.round((subtotalGHS * (coupon.value / 100)) * 100) / 100;
+    discountUSD = Math.round(subtotalUSD * (coupon.value / 100) * 100) / 100;
+    discountGHS = Math.round(subtotalGHS * (coupon.value / 100) * 100) / 100;
   } else {
     // FIXED amount
     discountUSD = Math.min(subtotalUSD, coupon.value);

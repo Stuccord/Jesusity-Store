@@ -4,7 +4,6 @@ import teeLifestyle from "@/assets/tee-front.jpeg";
 import teePromo from "@/assets/IMG_8450.png";
 import teeDetail from "@/assets/tee-lifestyle-new.jpeg";
 
-
 export const PRODUCT = {
   id: "jesusity-tee-forest",
   name: "The Jesusity Tee",
@@ -17,8 +16,8 @@ export const PRODUCT = {
   priceGHS: 253,
   currencyGHS: "GHS",
   sizes: ["S", "M", "L", "XL", "XXL"] as const,
-  shipEstimate: "Ships August 2026",
-  preorderCloseISO: "2026-07-31T23:59:59-05:00",
+  shipEstimate: "Ships October 2026",
+  preorderCloseISO: "2026-09-30T23:59:59-05:00",
   images: {
     front: teeFront,
     back: teeBack,

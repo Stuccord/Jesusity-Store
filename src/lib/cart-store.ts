@@ -116,7 +116,7 @@ export function useCart() {
   const snap = useSyncExternalStore(
     (cb) => cart.subscribe(cb),
     () => items,
-    () => SSR_EMPTY
+    () => SSR_EMPTY,
   );
   useEffect(() => {
     cart.hydrate();
@@ -128,7 +128,7 @@ export function useAppliedCoupon() {
   const _snap = useSyncExternalStore(
     (cb) => cart.subscribe(cb),
     () => appliedCouponCode,
-    () => null
+    () => null,
   );
   useEffect(() => {
     cart.hydrate();
