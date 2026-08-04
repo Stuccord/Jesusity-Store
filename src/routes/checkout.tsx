@@ -18,8 +18,8 @@ if (!PAYSTACK_KEY) {
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
-      { title: "Checkout — Jesusity Preorder" },
-      { name: "description", content: "Reserve your Jesusity Tee." },
+      { title: "Checkout — Jesusity Tee | Clovermade Studios" },
+      { name: "description", content: "Order your Jesusity Tee. Ships in 3 working days." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -235,18 +235,16 @@ function CheckoutPage() {
       <section className="mx-auto max-w-2xl px-4 md:px-8 py-24 text-center">
         <CheckCircle2 className="w-16 h-16 mx-auto text-forest" />
         <div className="mt-4 text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
-          Preorder Confirmed
+          Order Confirmed
         </div>
         <h1 className="font-hero text-5xl md:text-6xl text-forest-deep mt-2">
           YOU'RE IN THE PURSUIT.
         </h1>
         <p className="mt-4 text-muted-foreground max-w-md mx-auto text-sm">
-          Thank you, <strong className="text-foreground">{form.firstName}</strong>. Your preorder is
-          secured.{" "}
-          <strong className="text-forest-deep">
-            Estimated ship window: {PRODUCT.shipEstimate}.
-          </strong>{" "}
-          We'll email tracking the day yours goes out.
+          Thank you, <strong className="text-foreground">{form.firstName}</strong>. Your order is
+          confirmed.{" "}
+          <strong className="text-forest-deep">Estimated delivery: {PRODUCT.shipEstimate}.</strong>{" "}
+          We'll send tracking the day yours goes out.
         </p>
         <div className="mt-4 text-xs text-muted-foreground font-mono tracking-widest">
           Ref: {orderRef}
@@ -254,9 +252,11 @@ function CheckoutPage() {
         <div className="mt-8 bg-lime border-2 border-forest-deep p-4 text-left inline-block">
           <div className="font-varsity text-sm">WHAT HAPPENS NEXT</div>
           <ol className="mt-2 text-xs tracking-widest uppercase space-y-1 text-forest-deep/80">
-            <li>1 · Preorder window closes September 30</li>
-            <li>2 · Tees go into production</li>
-            <li>3 · Ships {PRODUCT.shipEstimate.toLowerCase()}</li>
+            <li>1 · Order is confirmed &amp; packed</li>
+            <li>2 · Dispatched within 24 hours</li>
+            <li>
+              3 · Delivered in {PRODUCT.shipEstimate.toLowerCase()} — Jesus rose on the 3rd Day
+            </li>
           </ol>
         </div>
         <div className="mt-10 flex gap-4 justify-center">
@@ -312,7 +312,7 @@ function CheckoutPage() {
         <div className="flex items-baseline justify-between border-b-2 border-forest-deep pb-4">
           <h1 className="font-varsity text-3xl md:text-4xl">CHECKOUT</h1>
           <span className="text-[10px] tracking-[0.25em] uppercase text-muted-foreground">
-            Drop 001 · Preorder
+            Drop 001 · Order
           </span>
         </div>
 
@@ -537,7 +537,11 @@ function CheckoutPage() {
               <div className="flex items-center gap-1.5 text-forest-deep font-bold">
                 <span>{appliedCoupon.code}</span>
                 <span className="text-[10px] font-normal text-forest-deep/80">
-                  ({appliedCoupon.value}% OFF)
+                  (
+                  {appliedCoupon.type === "FIXED_GHS"
+                    ? `GH₵${appliedCoupon.value} OFF`
+                    : `${appliedCoupon.value}% OFF`}
+                  )
                 </span>
               </div>
               <button
@@ -554,7 +558,7 @@ function CheckoutPage() {
             <form onSubmit={handleApplyCoupon} className="flex gap-2">
               <input
                 type="text"
-                placeholder="AMA or KOFI"
+                placeholder="Enter coupon code"
                 value={couponInput}
                 onChange={(e) => setCouponInput(e.target.value)}
                 className="flex-1 border border-forest-deep px-2.5 py-1.5 text-xs font-mono tracking-wider focus:outline-none uppercase"
@@ -611,8 +615,8 @@ function CheckoutPage() {
           </div>
         </div>
 
-        <div className="bg-lime border-2 border-forest-deep p-3 text-xs tracking-widest uppercase font-bold">
-          Ships October 2026 · Limited Preorder
+        <div className="bg-lime border-2 border-forest-deep p-3 text-xs tracking-widest uppercase font-bold flex items-center gap-2">
+          <span>🕒</span> Delivers in 3 Working Days · Worldwide
         </div>
       </aside>
     </section>

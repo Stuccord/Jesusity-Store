@@ -8,7 +8,7 @@ export const Route = createFileRoute("/cart")({
   head: () => ({
     meta: [
       { title: "Your Bag — Jesusity" },
-      { name: "description", content: "Review your Jesusity preorder before checkout." },
+      { name: "description", content: "Review your Jesusity order before checkout." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -175,7 +175,7 @@ function CartPage() {
         </div>
 
         <div className="bg-lime border-2 border-forest-deep p-3 text-xs tracking-widest uppercase font-bold">
-          Preorder · {PRODUCT.shipEstimate}
+          Delivers in {PRODUCT.shipEstimate}
         </div>
 
         <Link to="/checkout" className="btn-drop w-full">

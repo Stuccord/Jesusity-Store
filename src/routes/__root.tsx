@@ -14,7 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { MobilePreorderBar } from "@/components/MobilePreorderBar";
+import { MobileOrderBar } from "@/components/MobilePreorderBar";
 
 function NotFoundComponent() {
   return (
@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Preorder the Jesusity Tee — an oversized heavyweight cotton faith-rooted streetwear drop from Clovermade Studios. Limited run. Ships October 2026.",
+          "Order the Jesusity Tee — an oversized heavyweight cotton faith-rooted streetwear drop from Clovermade Studios. In stock. Delivers in 3 working days.",
       },
       { name: "author", content: "Clovermade Studios" },
       { name: "theme-color", content: "#173628" },
@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "The endless pursuit of the Son of God. Preorder the Jesusity Tee in Forest Green — a limited faith-rooted streetwear drop.",
+          "The endless pursuit of the Son of God. Order the Jesusity Tee in Forest Green — faith-rooted streetwear with 3-day delivery.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Clovermade Studios" },
@@ -92,7 +92,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:title", content: "Jesusity — Drop 001" },
       {
         name: "twitter:description",
-        content: "Preorder the Jesusity Tee. Limited faith-rooted streetwear drop.",
+        content:
+          "Order the Jesusity Tee. Faith-rooted streetwear drop. Delivers in 3 working days.",
       },
     ],
     links: [
@@ -149,7 +150,7 @@ function RootComponent() {
             <Outlet />
           </main>
           <Footer />
-          <MobilePreorderBar />
+          <MobileOrderBar />
         </div>
       )}
     </QueryClientProvider>

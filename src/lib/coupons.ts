@@ -1,11 +1,11 @@
 import { useEffect, useSyncExternalStore } from "react";
 
-export type DiscountType = "PERCENT" | "FIXED";
+export type DiscountType = "PERCENT" | "FIXED_GHS";
 
 export interface Coupon {
   code: string;
   type: DiscountType;
-  value: number; // discount: e.g. 15 for 15% off to the customer
+  value: number; // PERCENT: e.g. 15 = 15% off · FIXED_GHS: cedis off e.g. 30 = GH₵30 off
   commissionRate: number; // influencer earns this % of the revenue they generate (e.g. 10 = 10%)
   influencerName: string;
   description: string;
@@ -14,41 +14,31 @@ export interface Coupon {
   createdAt: string;
 }
 
-const STORAGE_KEY = "jesusity-coupons-v3";
+// Bump storage key so stale coupons from localStorage are cleared
+const STORAGE_KEY = "jesusity-coupons-v4";
 
 const DEFAULT_COUPONS: Coupon[] = [
   {
-    code: "AMA",
-    type: "PERCENT",
-    value: 15,
+    code: "THEJESUSSTAN",
+    type: "FIXED_GHS",
+    value: 30, // GH₵30 off
     commissionRate: 10,
-    influencerName: "Ama Mensah",
-    description: "Ama's 15% follower discount code",
+    influencerName: "The Jesus Stan",
+    description: "GH₵30 off — The Jesus Stan community code",
     active: true,
     usageCount: 0,
-    createdAt: "2026-07-01T10:00:00Z",
+    createdAt: "2026-08-04T00:00:00Z",
   },
   {
-    code: "KOFI",
-    type: "PERCENT",
-    value: 20,
-    commissionRate: 10,
-    influencerName: "Kofi Owusu",
-    description: "Kofi's 20% follower discount code",
+    code: "ONEMAN1000",
+    type: "FIXED_GHS",
+    value: 50, // GH₵50 off
+    commissionRate: 17,
+    influencerName: "Nana Yaw Ofori Atta",
+    description: "GH₵50 off — Nana Yaw Ofori Atta community code",
     active: true,
     usageCount: 0,
-    createdAt: "2026-07-05T12:00:00Z",
-  },
-  {
-    code: "JESUSITY10",
-    type: "PERCENT",
-    value: 10,
-    commissionRate: 0,
-    influencerName: "Clovermade Studio",
-    description: "10% Welcome preorder promo",
-    active: true,
-    usageCount: 0,
-    createdAt: "2026-07-10T08:00:00Z",
+    createdAt: "2026-08-04T00:00:00Z",
   },
 ];
 
@@ -175,6 +165,10 @@ export function useCoupons() {
   return snap;
 }
 
+/**
+ * Calculate the discount for a coupon.
+ * FIXED_GHS coupons discount the GHS price directly; USD is derived from the same ratio.
+ */
 export function calculateCouponDiscount(
   coupon: Coupon | null,
   subtotalUSD: number,
@@ -188,13 +182,14 @@ export function calculateCouponDiscount(
   let discountGHS = 0;
 
   if (coupon.type === "PERCENT") {
-    discountUSD = Math.round(subtotalUSD * (coupon.value / 100) * 100) / 100;
     discountGHS = Math.round(subtotalGHS * (coupon.value / 100) * 100) / 100;
+    discountUSD = Math.round(subtotalUSD * (coupon.value / 100) * 100) / 100;
   } else {
-    // FIXED amount
-    discountUSD = Math.min(subtotalUSD, coupon.value);
-    const ghsRatio = subtotalGHS / (subtotalUSD || 1);
-    discountGHS = Math.min(subtotalGHS, Math.round(discountUSD * ghsRatio));
+    // FIXED_GHS: value is cedis off
+    discountGHS = Math.min(subtotalGHS, coupon.value);
+    // Derive USD discount from the GHS/USD ratio
+    const usdPerGhs = subtotalUSD / (subtotalGHS || 1);
+    discountUSD = Math.round(discountGHS * usdPerGhs * 100) / 100;
   }
 
   const finalUSD = Math.max(0, subtotalUSD - discountUSD);

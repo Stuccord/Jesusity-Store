@@ -3,7 +3,6 @@ import { useState } from "react";
 import { PRODUCT } from "@/lib/product";
 import { BuyBox } from "@/components/BuyBox";
 import { Ticker } from "@/components/Ticker";
-import { useIsPreorderClosed } from "@/components/Countdown";
 
 export const Route = createFileRoute("/product")({
   head: () => ({
@@ -12,12 +11,13 @@ export const Route = createFileRoute("/product")({
       {
         name: "description",
         content:
-          "Heavyweight 240gsm cotton. Oversized boxy fit. Front varsity arc + back GOD of the EAST print. Full sizing, fabric and print detail.",
+          "Heavyweight 240gsm cotton. Oversized boxy fit. Front varsity arc + back GOD of the EAST print. Full sizing, fabric and print detail. Ships in 3 working days.",
       },
       { property: "og:title", content: "The Jesusity Tee — Full Details" },
       {
         property: "og:description",
-        content: "Heavyweight cotton preorder tee. Oversized boxy fit. Screen-printed graphics.",
+        content:
+          "Heavyweight cotton tee. Oversized boxy fit. Screen-printed graphics. Delivers in 3 working days.",
       },
     ],
     links: [{ rel: "canonical", href: "/product" }],
@@ -29,21 +29,14 @@ const gallery = [
   { src: PRODUCT.images.front, label: "Front" },
   { src: PRODUCT.images.back, label: "Back" },
   { src: PRODUCT.images.lifestyle, label: "On-body" },
-  { src: PRODUCT.images.promo, label: "Preorder Promo" },
+  { src: PRODUCT.images.promo, label: "Detail Shot" },
 ];
 
 function ProductPage() {
   const [active, setActive] = useState(0);
-  const isClosed = useIsPreorderClosed(PRODUCT.preorderCloseISO);
   return (
     <>
-      <Ticker
-        text={
-          isClosed
-            ? "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER CLOSED  ✶"
-            : "THE JESUSITY TEE  ✶  DROP 001  ✶  PREORDER  ✶"
-        }
-      />
+      <Ticker text="THE JESUSITY TEE  ✶  DROP 001  ✶  IN STOCK  ✶  3 WORKING DAYS DELIVERY  ✶" />
       <section className="mx-auto max-w-7xl px-4 md:px-8 py-12 md:py-16 grid gap-10 lg:grid-cols-[1.1fr_1fr]">
         <div>
           <div className="border-2 border-forest-deep bg-card">

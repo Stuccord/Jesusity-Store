@@ -2,14 +2,12 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { PRODUCT, type Size } from "@/lib/product";
 import { cart } from "@/lib/cart-store";
-import { Countdown, useIsPreorderClosed } from "./Countdown";
-import { ShieldCheck, Truck, RotateCcw } from "lucide-react";
+import { ShieldCheck, Truck, Clock } from "lucide-react";
 
 export function BuyBox({ compact = false }: { compact?: boolean }) {
   const [size, setSize] = useState<Size | null>(null);
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
-  const isClosed = useIsPreorderClosed(PRODUCT.preorderCloseISO);
 
   const onAdd = () => {
     if (!size) return;
@@ -31,7 +29,7 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
         <>
           <div>
             <div className="text-[11px] tracking-[0.3em] uppercase text-muted-foreground">
-              Drop 001 · Preorder
+              Drop 001 · Forest Green
             </div>
             <h1 className="font-varsity text-4xl md:text-5xl leading-[0.95] mt-2">
               THE JESUSITY TEE
@@ -58,15 +56,11 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
           {PRODUCT.sizes.map((s) => (
             <button
               key={s}
-              onClick={() => !isClosed && setSize(s)}
-              disabled={isClosed}
-              aria-disabled={isClosed}
+              onClick={() => setSize(s)}
               className={`py-3 border-2 font-varsity text-lg tracking-wide transition-colors ${
-                isClosed
-                  ? "border-border text-muted-foreground cursor-not-allowed opacity-50"
-                  : size === s
-                    ? "bg-forest-deep text-cream border-forest-deep"
-                    : "border-forest-deep hover:bg-forest-deep hover:text-cream"
+                size === s
+                  ? "bg-forest-deep text-cream border-forest-deep"
+                  : "border-forest-deep hover:bg-forest-deep hover:text-cream"
               }`}
             >
               {s}
@@ -76,70 +70,47 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div
-          className={`inline-flex items-center border-2 ${isClosed ? "border-border opacity-50" : "border-forest-deep"}`}
-        >
-          <button
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            disabled={isClosed}
-            className="px-3 py-3 disabled:cursor-not-allowed"
-          >
+        <div className="inline-flex items-center border-2 border-forest-deep">
+          <button onClick={() => setQty((q) => Math.max(1, q - 1))} className="px-3 py-3">
             −
           </button>
           <span className="px-4 font-bold">{qty}</span>
-          <button
-            onClick={() => setQty((q) => q + 1)}
-            disabled={isClosed}
-            className="px-3 py-3 disabled:cursor-not-allowed"
-          >
+          <button onClick={() => setQty((q) => q + 1)} className="px-3 py-3">
             +
           </button>
         </div>
         <button
           onClick={onAdd}
-          disabled={!size || isClosed}
+          disabled={!size}
           className="btn-drop flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isClosed
-            ? "Preorder Closed"
-            : added
-              ? "Added to Bag ✓"
-              : size
-                ? "Preorder Now"
-                : "Select a Size"}
+          {added ? "Added to Bag ✓" : size ? "Add to Bag" : "Select a Size"}
         </button>
       </div>
 
-      <div
-        className={`border-2 px-4 py-3 ${isClosed ? "border-muted-foreground bg-muted" : "border-forest-deep bg-lime"}`}
-      >
-        <div
-          className={`font-varsity text-sm ${isClosed ? "text-muted-foreground" : "text-forest-deep"}`}
-        >
-          {isClosed ? "This drop has closed" : PRODUCT.shipEstimate}
+      {/* Delivery promise */}
+      <div className="border-2 border-forest-deep bg-lime px-4 py-3">
+        <div className="flex items-center gap-2 font-varsity text-sm text-forest-deep">
+          <Clock className="w-4 h-4 shrink-0" />
+          DELIVERY IN 3 WORKING DAYS
         </div>
-        <div
-          className={`text-[11px] tracking-widest uppercase mt-1 ${isClosed ? "text-muted-foreground" : "text-forest-deep/70"}`}
-        >
-          {isClosed ? "Drop 001 is no longer available for preorder" : "Preorder window closes in"}
-        </div>
-        <div className="mt-2">
-          <Countdown iso={PRODUCT.preorderCloseISO} compact />
+        <div className="text-[11px] tracking-wider uppercase mt-1 text-forest-deep/70 leading-snug">
+          Relative to proximity — no matter how far.{" "}
+          <span className="font-bold">Jesus rose on the 3rd Day.</span>
         </div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-[10px] tracking-widest uppercase">
         <div className="flex items-center gap-2 border border-border p-2">
           <ShieldCheck className="w-4 h-4 text-forest" />
-          Secure Checkout
+          Secure Pay
         </div>
         <div className="flex items-center gap-2 border border-border p-2">
           <Truck className="w-4 h-4 text-forest" />
-          Worldwide Ship
+          Fast Ship
         </div>
         <div className="flex items-center gap-2 border border-border p-2">
-          <RotateCcw className="w-4 h-4 text-forest" />
-          Fit Guarantee
+          <Clock className="w-4 h-4 text-forest" />3 Days Max
         </div>
       </div>
 

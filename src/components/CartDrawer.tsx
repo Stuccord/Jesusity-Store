@@ -39,7 +39,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
           <div>
             <div className="font-varsity text-lg leading-none">YOUR BAG</div>
             <div className="text-[10px] tracking-[0.25em] uppercase text-cream/70 mt-1">
-              Preorder Drop 001
+              Drop 001 · In Stock
             </div>
           </div>
           <button onClick={onClose} aria-label="Close cart" className="p-1">
@@ -112,7 +112,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                   <Tag className="w-3.5 h-3.5 text-forest" /> Promo / Coupon Code
                 </span>
                 <span className="text-[10px] text-muted-foreground font-normal">
-                  Try: AMA, KOFI
+                  Enter coupon code
                 </span>
               </div>
               {appliedCoupon ? (
@@ -121,7 +121,11 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                     <Check className="w-3.5 h-3.5 text-forest" />
                     <span>{appliedCoupon.code}</span>
                     <span className="text-[10px] font-normal text-muted-foreground">
-                      ({appliedCoupon.value}% OFF)
+                      (
+                      {appliedCoupon.type === "FIXED_GHS"
+                        ? `GH₵${appliedCoupon.value} OFF`
+                        : `${appliedCoupon.value}% OFF`}
+                      )
                     </span>
                   </div>
                   <button
@@ -138,7 +142,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
                 <form onSubmit={handleApplyCoupon} className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Enter AMA or KOFI"
+                    placeholder="Enter coupon code"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
                     className="flex-1 border border-forest-deep px-2.5 py-1.5 text-xs font-mono tracking-wider focus:outline-none focus:ring-1 focus:ring-forest-deep uppercase"
@@ -162,7 +166,7 @@ export function CartDrawer({ open, onClose }: { open: boolean; onClose: () => vo
             </div>
 
             <div className="text-[11px] tracking-[0.2em] uppercase text-forest-deep bg-lime border-2 border-forest-deep px-3 py-2">
-              Preorder · {PRODUCT.shipEstimate}
+              Delivers in {PRODUCT.shipEstimate}
             </div>
 
             <div className="space-y-1 text-sm">

@@ -73,7 +73,7 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/faq" className="hover:text-lime">
-                  Preorder FAQ
+                  FAQ
                 </Link>
               </li>
               <li>

@@ -4,16 +4,16 @@ import { FAQ } from "@/components/FAQ";
 export const Route = createFileRoute("/faq")({
   head: () => ({
     meta: [
-      { title: "Preorder FAQ — Jesusity | Clovermade Studios" },
+      { title: "FAQ — Jesusity Tee | Clovermade Studios" },
       {
         name: "description",
         content:
-          "Answers about the Jesusity preorder — ship dates, sizing, fit, fabric, colorways, returns and more.",
+          "Answers about the Jesusity Tee — delivery time, sizing, fit, fabric, colorways, returns and more.",
       },
-      { property: "og:title", content: "Preorder FAQ — Jesusity" },
+      { property: "og:title", content: "FAQ — Jesusity Tee | Clovermade Studios" },
       {
         property: "og:description",
-        content: "Everything you need to know before you preorder the Jesusity Tee.",
+        content: "Everything you need to know before ordering the Jesusity Tee.",
       },
     ],
     links: [{ rel: "canonical", href: "/faq" }],
@@ -26,10 +26,10 @@ export const Route = createFileRoute("/faq")({
           mainEntity: [
             {
               "@type": "Question",
-              name: "What does preorder mean and when will I receive my order?",
+              name: "How long does delivery take?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "Preorder means you reserve your tee before we print it. Drop 001 preorders close September 30, 2026 — ships October 2026.",
+                text: "Relative to proximity, delivery takes at most THREE WORKING DAYS no matter how far. Jesus rose on the 3rd Day — your tee will too.",
               },
             },
           ],
@@ -42,12 +42,12 @@ export const Route = createFileRoute("/faq")({
 
 const items = [
   {
-    q: "What does preorder mean and when will I get my order?",
-    a: "Preorder means you're reserving your tee before it's produced. Drop 001 preorders close on September 30, 2026, then we go straight into production. Estimated ship window: October 2026. You'll get a tracking email the day yours ships.",
+    q: "How long does delivery take?",
+    a: "Relative to proximity, delivery takes at most THREE WORKING DAYS no matter how far you are. Jesus rose up on the 3rd Day — and so will your tee. You'll get a tracking email the day yours ships.",
   },
   {
-    q: "Why isn't this available for immediate purchase?",
-    a: "Because we don't overproduce. Drops are made to demand — you commit, we print, you get first. No warehouse full of unsold inventory, no restocks after the window closes. It also lets us keep the quality up and the run intentional.",
+    q: "Do you ship internationally?",
+    a: "Yes — we ship worldwide. The three working day promise applies no matter the destination.",
   },
   {
     q: "What's the fit like — should I size up or down?",
@@ -62,20 +62,20 @@ const items = [
     a: "Yes. Drop 001 is Forest Green only — a single limited run. New colorways and designs release as separate drops. Join the notify list at the bottom of any page to hear about Drop 002 first.",
   },
   {
-    q: "How much is shipping and where do you ship?",
-    a: "Domestic US shipping is a flat rate calculated at checkout. We ship worldwide — international rates apply based on destination.",
+    q: "How much is shipping?",
+    a: "Shipping is free and included in the price. Delivery is at most three working days.",
   },
   {
     q: "What's your return policy?",
-    a: "Because every tee is made to order for the preorder run, sales are final on sizing changes after the window closes. Defective or misprinted items are replaced free of charge — reach out within 14 days of delivery.",
+    a: "Each tee is made with intention. Defective or misprinted items are replaced free of charge — reach out within 14 days of delivery. Sizing returns are accepted if the tee is unworn and in original condition.",
   },
   {
     q: "How do I care for it?",
     a: "Cold wash inside out, hang dry, low iron on the reverse. Never tumble dry the prints — heavyweight cotton and screen prints last longest when you treat them right.",
   },
   {
-    q: "Can I cancel my preorder?",
-    a: "Yes — cancellations are open until the preorder window closes and production begins. After that, cancellations aren't possible because the tee has already been printed for you.",
+    q: "Can I cancel my order?",
+    a: "Yes — orders can be cancelled within 12 hours of purchase if they haven't been packed yet. Contact us immediately at support@clovermadestudios.store.",
   },
 ];
 
@@ -83,7 +83,7 @@ function FAQPage() {
   return (
     <section className="mx-auto max-w-4xl px-4 md:px-8 py-16 md:py-24">
       <div className="text-[10px] tracking-[0.3em] uppercase text-muted-foreground">
-        The Preorder Handbook
+        The Order Handbook
       </div>
       <h1 className="mt-2 font-varsity text-5xl md:text-7xl leading-none">
         FAQ.
@@ -91,8 +91,7 @@ function FAQPage() {
         <span className="text-forest">READ FIRST.</span>
       </h1>
       <p className="mt-6 max-w-2xl text-foreground/80">
-        Drop culture works when everyone knows what they're signing up for. Here's every answer
-        upfront.
+        Every question answered before you order. We don't hide anything.
       </p>
       <div className="mt-10">
         <FAQ items={items} />

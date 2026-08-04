@@ -1,11 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { PRODUCT } from "@/lib/product";
-import { useIsPreorderClosed } from "./Countdown";
 
-export function MobilePreorderBar() {
+export function MobileOrderBar() {
   const [show, setShow] = useState(false);
-  const isClosed = useIsPreorderClosed(PRODUCT.preorderCloseISO);
 
   useEffect(() => {
     const onScroll = () => setShow(window.scrollY > 600);
@@ -22,18 +19,12 @@ export function MobilePreorderBar() {
         <div className="flex-1">
           <div className="font-varsity text-sm leading-none">JESUSITY TEE</div>
           <div className="text-[10px] tracking-widest uppercase text-muted-foreground mt-0.5">
-            {isClosed ? "Preorder Closed" : `$${PRODUCT.price} · Preorder`}
+            Ships in 3 Working Days
           </div>
         </div>
-        {isClosed ? (
-          <span className="font-varsity text-xs tracking-widest uppercase border-2 border-muted-foreground text-muted-foreground px-4 py-3 opacity-60">
-            Closed
-          </span>
-        ) : (
-          <Link to="/product" className="btn-drop !py-3 !px-5 text-xs">
-            Preorder
-          </Link>
-        )}
+        <Link to="/product" className="btn-drop !py-3 !px-5 text-xs">
+          Order Now
+        </Link>
       </div>
     </div>
   );

@@ -80,7 +80,7 @@ function AdminPage() {
   // New Coupon form state
   const [newCode, setNewCode] = useState("");
   const [newValue, setNewValue] = useState<number>(15);
-  const [newType, setNewType] = useState<"PERCENT" | "FIXED">("PERCENT");
+  const [newType, setNewType] = useState<"PERCENT" | "FIXED_GHS">("FIXED_GHS");
   const [newCommissionRate, setNewCommissionRate] = useState<number>(10);
   const [newInfluencer, setNewInfluencer] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -351,12 +351,12 @@ function AdminPage() {
 
           <div className="bg-forest-deep text-cream border-2 border-forest-deep p-4 space-y-1 col-span-2 lg:col-span-1">
             <div className="text-[10px] tracking-widest uppercase text-cream/70 font-bold flex items-center justify-between">
-              Preorder Window
+              Delivery SLA
               <Clock className="w-4 h-4 text-lime" />
             </div>
-            <div className="font-varsity text-xl text-lime">CLOSES SEPT 30</div>
+            <div className="font-varsity text-xl text-lime">3 WORKING DAYS</div>
             <div className="text-[10px] tracking-wider uppercase text-cream/80">
-              Ships October 2026
+              Jesus Rose on the 3rd Day
             </div>
           </div>
         </div>
@@ -856,8 +856,8 @@ function AdminPage() {
                       onChange={(e) => setNewType(e.target.value as typeof newType)}
                       className="w-full border-2 border-forest-deep p-2.5 text-xs font-bold bg-cream"
                     >
+                      <option value="FIXED_GHS">Fixed Cedis Off (GH₵)</option>
                       <option value="PERCENT">% Percentage</option>
-                      <option value="FIXED">Fixed Amount ($)</option>
                     </select>
                   </div>
                 </div>

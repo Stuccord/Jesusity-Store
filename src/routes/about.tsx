@@ -58,7 +58,7 @@ function About() {
         <div className="border-l-4 border-lime pl-6 py-2">
           <div className="font-varsity text-xl">DROP 001 · JESUSITY TEE</div>
           <div className="text-sm text-muted-foreground mt-1 tracking-widest uppercase">
-            Forest Green · Preorder · Ships October 2026
+            Forest Green · In Stock · Delivers in 3 Working Days
           </div>
         </div>
         <div className="pt-6 text-center">

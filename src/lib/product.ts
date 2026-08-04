@@ -12,12 +12,13 @@ export const PRODUCT = {
   price: 22,
   currency: "USD",
   // Paystack charges in GHS — update this to match your desired Cedis price
-  // (1 USD = 11.50 GHS -> $22 = 253 GHS)
+  // (1 USD ≈ 11.50 GHS → $22 ≈ 253 GHS)
   priceGHS: 253,
   currencyGHS: "GHS",
   sizes: ["S", "M", "L", "XL", "XXL"] as const,
-  shipEstimate: "Ships October 2026",
-  preorderCloseISO: "2026-09-30T23:59:59-05:00",
+  shipEstimate: "3 Working Days",
+  // Set well into the future so the store is always "open"
+  preorderCloseISO: "2099-12-31T23:59:59-05:00",
   images: {
     front: teeFront,
     back: teeBack,

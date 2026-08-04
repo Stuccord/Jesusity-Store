@@ -34,7 +34,7 @@ const list = [
     h: "Atlanta, GA",
   },
   {
-    q: "Preorder culture done right. Transparent ship date, quality feels premium in the mockups. Locked in.",
+    q: "Drop culture done right. Delivered in 2 days, quality feels premium. Locked in.",
     n: "Sam O.",
     h: "London, UK",
   },

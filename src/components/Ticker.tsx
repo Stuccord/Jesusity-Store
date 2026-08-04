@@ -5,7 +5,7 @@ type Props = {
 };
 
 export function Ticker({
-  text = "ONLY ON PREORDER  ✦  WWW.CLOVERMADESTUDIOS.STORE  ✦  THE ENDLESS PURSUIT OF THE SON OF GOD  ✦  JESUSITY DROP 001  ✦",
+  text = "ORDER NOW  ✦  WWW.CLOVERMADESTUDIOS.STORE  ✦  THE ENDLESS PURSUIT OF THE SON OF GOD  ✦  JESUSITY DROP 001  ✦",
   variant = "dark",
   speed = "normal",
 }: Props) {
