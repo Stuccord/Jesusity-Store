@@ -38,9 +38,11 @@ export function BuyBox({ compact = false }: { compact?: boolean }) {
               Forest Green Colorway
             </div>
           </div>
-          <div className="flex items-baseline gap-3">
-            <div className="font-varsity text-3xl">${PRODUCT.price}</div>
-            <div className="text-xs tracking-widest uppercase text-muted-foreground">USD</div>
+          <div className="flex items-baseline gap-2">
+            <div className="font-varsity text-3xl">GH₵{PRODUCT.priceGHS}</div>
+            <div className="text-xs tracking-widest uppercase text-muted-foreground">
+              (~${PRODUCT.price} USD)
+            </div>
           </div>
         </>
       )}
