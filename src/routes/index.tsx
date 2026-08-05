@@ -137,7 +137,7 @@ function Hero() {
           </div>
           <div className="absolute -bottom-6 -left-4 md:-left-8 bg-cream border-2 border-forest-deep px-4 py-3 rotate-[-4deg]">
             <div className="font-varsity text-xs md:text-sm">
-              GH₵{PRODUCT.priceGHS} · FOREST GREEN
+              ${PRODUCT.price.toFixed(2)} · FOREST GREEN
             </div>
           </div>
         </div>

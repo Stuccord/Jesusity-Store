@@ -8,8 +8,8 @@ export const PRODUCT = {
   id: "jesusity-tee-forest",
   name: "The Jesusity Tee",
   colorway: "Forest Green",
-  // Display price in USD shown to customers (~$26 USD ≈ GH₵300)
-  price: 26,
+  // Display price in USD shown to customers ($25.61)
+  price: 25.61,
   currency: "USD",
   // Primary checkout currency on Paystack is Cedis (GH₵300)
   priceGHS: 300,
