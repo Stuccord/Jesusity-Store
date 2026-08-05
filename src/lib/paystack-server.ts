@@ -2,8 +2,7 @@
  * paystack-server.ts
  *
  * Server-only functions that use the PAYSTACK_SECRET_KEY.
- * These run on the server (Node / Cloudflare Worker) via createServerFn,
- * so the secret key is NEVER sent to the browser unless supplied explicitly.
+ * These run on the server (Node / Cloudflare Worker) via createServerFn.
  */
 import { createServerFn } from "@tanstack/react-start";
 
@@ -46,7 +45,17 @@ interface PaystackVerifyResponse {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function getSecretKey(): string {
-  return process.env["PAYSTACK_SECRET_KEY"] ?? "";
+  // Check multiple environment variable sources across Node / Cloudflare Worker / Vite
+  const env =
+    process.env.PAYSTACK_SECRET_KEY ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (import.meta as any).env?.PAYSTACK_SECRET_KEY ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any).PAYSTACK_SECRET_KEY ||
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (globalThis as any).process?.env?.PAYSTACK_SECRET_KEY ||
+    "";
+  return env;
 }
 
 export function isValidSecretKey(key: string): boolean {
@@ -60,71 +69,76 @@ export function isValidSecretKey(key: string): boolean {
 
 // ─── Server Functions ─────────────────────────────────────────────────────────
 
-export const fetchPaystackTransactions = createServerFn({ method: "GET" }).handler(
-  async (): Promise<{ ok: boolean; transactions?: PaystackTx[]; error?: string }> => {
-    const secretKey = getSecretKey().trim();
-
-    if (!isValidSecretKey(secretKey)) {
-      return {
-        ok: false,
-        error:
-          "PAYSTACK_SECRET_KEY is missing or invalid in .env. Please set your secret key (sk_live_...) in your .env file.",
-      };
-    }
-
-    try {
-      // Page 1: up to 100 transactions
-      const res1 = await fetch("https://api.paystack.co/transaction?perPage=100&page=1", {
-        headers: {
-          Authorization: `Bearer ${secretKey}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res1.ok) {
-        if (res1.status === 401) {
-          return {
-            ok: false,
-            error:
-              "Paystack API returned 401 Invalid Key. Your secret key (sk_live_...) is incorrect or expired. Please verify your Secret Key at https://dashboard.paystack.com/#/settings/developer",
-          };
-        }
-        const errBody = await res1.text().catch(() => "");
-        return { ok: false, error: `Paystack API HTTP ${res1.status}: ${errBody}` };
+export const fetchPaystackTransactions = createServerFn({ method: "GET" })
+  .validator((payload?: { secretKey?: string }) => payload)
+  .handler(
+    async ({ data }): Promise<{ ok: boolean; transactions?: PaystackTx[]; error?: string }> => {
+      let secretKey = getSecretKey().trim();
+      if (data?.secretKey && isValidSecretKey(data.secretKey)) {
+        secretKey = data.secretKey.trim();
       }
 
-      const json1: PaystackListResponse = await res1.json();
-      if (!json1.status) {
-        return { ok: false, error: `Paystack response: ${json1.message}` };
+      if (!isValidSecretKey(secretKey)) {
+        return {
+          ok: false,
+          error:
+            "PAYSTACK_SECRET_KEY is missing or invalid. Please set your secret key (sk_live_...) in Cloudflare or enter it in the Admin Dashboard below.",
+        };
       }
 
-      let allTx = json1.data ?? [];
-
-      // Fetch page 2 if total > 100
-      const total = json1.meta?.total ?? allTx.length;
-      if (total > 100) {
-        const res2 = await fetch("https://api.paystack.co/transaction?perPage=100&page=2", {
+      try {
+        // Page 1: up to 100 transactions
+        const res1 = await fetch("https://api.paystack.co/transaction?perPage=100&page=1", {
           headers: {
             Authorization: `Bearer ${secretKey}`,
             "Content-Type": "application/json",
           },
         });
-        if (res2.ok) {
-          const json2: PaystackListResponse = await res2.json();
-          if (json2.status && json2.data) {
-            allTx = [...allTx, ...json2.data];
+
+        if (!res1.ok) {
+          if (res1.status === 401) {
+            return {
+              ok: false,
+              error:
+                "Paystack API returned 401 Invalid Key. Your secret key (sk_live_...) is incorrect or expired. Please check your Secret Key at https://dashboard.paystack.com/#/settings/developer",
+            };
+          }
+          const errBody = await res1.text().catch(() => "");
+          return { ok: false, error: `Paystack API HTTP ${res1.status}: ${errBody}` };
+        }
+
+        const json1: PaystackListResponse = await res1.json();
+        if (!json1.status) {
+          return { ok: false, error: `Paystack response: ${json1.message}` };
+        }
+
+        let allTx = json1.data ?? [];
+
+        // Fetch page 2 if total > 100
+        const total = json1.meta?.total ?? allTx.length;
+        if (total > 100) {
+          const res2 = await fetch("https://api.paystack.co/transaction?perPage=100&page=2", {
+            headers: {
+              Authorization: `Bearer ${secretKey}`,
+              "Content-Type": "application/json",
+            },
+          });
+          if (res2.ok) {
+            const json2: PaystackListResponse = await res2.json();
+            if (json2.status && json2.data) {
+              allTx = [...allTx, ...json2.data];
+            }
           }
         }
-      }
 
-      // Filter successful transactions
-      const successful = allTx.filter((tx) => tx.status === "success");
-      return { ok: true, transactions: successful };
-    } catch (err) {
-      return { ok: false, error: String(err) };
-    }
-  },
-);
+        // Filter successful transactions
+        const successful = allTx.filter((tx) => tx.status === "success");
+        return { ok: true, transactions: successful };
+      } catch (err) {
+        return { ok: false, error: String(err) };
+      }
+    },
+  );
 
 /**
  * Verify a single Paystack transaction reference.

@@ -70,6 +70,13 @@ function AdminPage() {
   );
   const [syncingApi, setSyncingApi] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
+  const [manualSecretKey, setManualSecretKey] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.localStorage.getItem("jesusity_admin_secret_key") || "";
+    }
+    return "";
+  });
+  const [showSecretInput, setShowSecretInput] = useState(false);
 
   // Orders tab state
   const [orderSearch, setOrderSearch] = useState("");
@@ -109,20 +116,30 @@ function AdminPage() {
     setTimeout(() => setCouponSuccessMsg(""), 5000);
   };
 
-  const handleSyncPaystackApi = async () => {
+  const handleSyncPaystackApi = async (overrideKey?: string) => {
     setSyncingApi(true);
     setSyncNotice(null);
 
+    const keyToUse = (overrideKey !== undefined ? overrideKey : manualSecretKey).trim();
+
     try {
-      const res = (await fetchPaystackTransactions()) as {
+      const res = (await fetchPaystackTransactions({ data: { secretKey: keyToUse } })) as {
         ok: boolean;
         transactions?: PaystackTx[];
         error?: string;
       };
       if (!res.ok) {
         setSyncNotice(res.error || "Paystack Sync Failed");
+        if (
+          res.error?.includes("missing") ||
+          res.error?.includes("invalid") ||
+          res.error?.includes("401")
+        ) {
+          setShowSecretInput(true);
+        }
         return;
       }
+      setShowSecretInput(false);
 
       const txs: PaystackTx[] = res.transactions || [];
       if (txs.length === 0) {
@@ -254,7 +271,7 @@ function AdminPage() {
 
         {syncNotice && (
           <div
-            className={`px-8 py-2.5 text-xs font-bold tracking-wider flex items-center justify-center gap-2 border-t ${
+            className={`px-8 py-3 text-xs font-bold tracking-wider flex flex-col sm:flex-row items-center justify-between gap-3 border-t ${
               syncNotice.includes("Failed") ||
               syncNotice.includes("401") ||
               syncNotice.includes("missing") ||
@@ -263,8 +280,53 @@ function AdminPage() {
                 : "bg-lime text-forest-deep border-forest-deep"
             }`}
           >
-            <Zap className="w-4 h-4 fill-current shrink-0" />
-            <span>{syncNotice}</span>
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 fill-current shrink-0" />
+              <span>{syncNotice}</span>
+            </div>
+            {(syncNotice.includes("missing") ||
+              syncNotice.includes("invalid") ||
+              syncNotice.includes("401")) && (
+              <button
+                onClick={() => setShowSecretInput((prev) => !prev)}
+                className="underline uppercase text-[11px] font-bold shrink-0 hover:text-white"
+              >
+                {showSecretInput ? "Hide Secret Key Input" : "Set Secret Key Now →"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {(showSecretInput || !isValidSecretKey(manualSecretKey)) && (
+          <div className="bg-forest border-y border-cream/20 px-8 py-4">
+            <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex-1">
+                <label className="block text-[10px] tracking-widest uppercase font-bold text-lime mb-1">
+                  Paystack Live Secret Key (sk_live_...)
+                </label>
+                <input
+                  type="password"
+                  placeholder="Paste your Paystack live secret key here"
+                  value={manualSecretKey}
+                  onChange={(e) => setManualSecretKey(e.target.value)}
+                  className="w-full bg-forest-deep border border-cream/30 text-cream px-3 py-2 text-xs font-mono focus:outline-none focus:border-lime"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  if (typeof window !== "undefined") {
+                    window.localStorage.setItem(
+                      "jesusity_admin_secret_key",
+                      manualSecretKey.trim(),
+                    );
+                  }
+                  handleSyncPaystackApi(manualSecretKey.trim());
+                }}
+                className="bg-lime text-forest-deep px-5 py-2 text-xs font-bold tracking-widest uppercase hover:bg-cream transition-colors shrink-0 self-end sm:self-center"
+              >
+                Save &amp; Sync Live Data
+              </button>
+            </div>
           </div>
         )}
 
