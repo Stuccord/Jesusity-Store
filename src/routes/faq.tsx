@@ -71,7 +71,7 @@ const items = [
   },
   {
     q: "How do I care for it?",
-    a: "Cold wash inside out, hang dry, low iron on the reverse. Never tumble dry the prints — heavyweight cotton and screen prints last longest when you treat them right.",
+    a: "Cold wash inside out, hang dry, low iron on the reverse. Never tumble dry the prints — 320gsm heavyweight cotton and DTF prints last longest when you treat them right.",
   },
   {
     q: "Can I cancel my order?",

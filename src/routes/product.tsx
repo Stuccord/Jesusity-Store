@@ -11,13 +11,13 @@ export const Route = createFileRoute("/product")({
       {
         name: "description",
         content:
-          "Heavyweight 240gsm cotton. Oversized boxy fit. Front varsity arc + back GOD of the EAST print. Full sizing, fabric and print detail. Ships in 3 working days.",
+          "320gsm heavyweight cotton. DTF Printed. Oversized boxy fit. Front varsity arc + back GOD of the EAST print. Made in Ghana. Ships in 3 working days.",
       },
       { property: "og:title", content: "The Jesusity Tee — Full Details" },
       {
         property: "og:description",
         content:
-          "Heavyweight cotton tee. Oversized boxy fit. Screen-printed graphics. Delivers in 3 working days.",
+          "Heavyweight cotton tee. Oversized boxy fit. DTF Printed graphics. Delivers in 3 working days.",
       },
     ],
     links: [{ rel: "canonical", href: "/product" }],
@@ -68,11 +68,11 @@ function ProductPage() {
         <div className="mx-auto max-w-6xl px-4 md:px-8 py-20 md:py-24 grid gap-10 md:grid-cols-2">
           <div>
             <div className="text-[10px] tracking-[0.3em] uppercase text-lime">Fabric</div>
-            <h2 className="mt-2 font-varsity text-4xl">240 GSM HEAVYWEIGHT COTTON</h2>
+            <h2 className="mt-2 font-varsity text-4xl">320 GSM HEAVYWEIGHT COTTON</h2>
             <p className="mt-4 text-cream/80 leading-relaxed">
-              Dense, structured, and built to hold its shape wear after wear. This isn't a
-              lightweight tee that curls after two washes — it's the kind of tee that gets better
-              the more you live in it.
+              Dense, structured, and built to hold its shape wear after wear. At 320gsm, this is one
+              of the heaviest cotton weights in streetwear — it hangs right, holds its structure,
+              and gets better the more you live in it.
             </p>
           </div>
           <div>
@@ -85,11 +85,11 @@ function ProductPage() {
           </div>
           <div>
             <div className="text-[10px] tracking-[0.3em] uppercase text-lime">Print</div>
-            <h2 className="mt-2 font-varsity text-4xl">SCREEN PRINTED IN LAYERS</h2>
+            <h2 className="mt-2 font-varsity text-4xl">DTF PRINTED · VIBRANT FOR LIFE</h2>
             <p className="mt-4 text-cream/80 leading-relaxed">
-              Front: JESUSITY collegiate arc in cream with drop-shadow. Back: oversized GOD of the
-              EAST graphic in lime. Both hand-pulled for depth and grain that digital print can't
-              fake.
+              Direct-to-Film (DTF) printing locks ink into the fabric at a molecular level — no
+              cracking, no peeling. Front: JESUSITY varsity arc in cream. Back: oversized GOD of the
+              EAST graphic in lime. Washes after washes, it stays sharp.
             </p>
           </div>
           <div>

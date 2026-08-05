@@ -272,7 +272,7 @@ function WhyUs() {
     {
       icon: Package,
       title: "MADE WITH PURPOSE",
-      body: "Every tee in Drop 001 is screen-printed on 240gsm heavyweight cotton. No shortcuts, no cheap blanks — built to outlast every season.",
+      body: "Every tee in Drop 001 is DTF Printed on 320gsm heavyweight cotton made in Ghana. No shortcuts, no cheap blanks — built to outlast every season.",
     },
     {
       icon: Clock,
@@ -319,10 +319,10 @@ function WhyUs() {
 
 function ProductDetails() {
   const rows = [
-    ["Fabric", "100% heavyweight cotton · 240 gsm"],
+    ["Fabric", "100% heavyweight cotton · 320 gsm"],
     ["Fit", "Oversized · boxy · drop-shoulder"],
-    ["Print", "Screen printed · cream front / lime back"],
-    ["Origin", "Designed in the US · ethically produced"],
+    ["Print", "DTF Printed · cream front / lime back"],
+    ["Origin", "Made in Ghana · ethically produced"],
     ["Care", "Cold wash inside out · hang dry · low iron"],
     ["Delivery", "3 working days — no matter how far"],
   ];

@@ -48,8 +48,8 @@ function About() {
           <strong className="font-varsity text-forest-deep text-xl block">
             SO WE BUILT WHAT WE WISHED EXISTED.
           </strong>
-          Heavyweight cotton. Oversized fits. Screen-printed graphics that carry weight. Every drop
-          is a chapter of the same story: the endless pursuit of the Son of God.
+          Heavyweight cotton. Oversized fits. DTF Printed graphics that carry weight. Every drop is
+          a chapter of the same story: the endless pursuit of the Son of God.
         </p>
         <p>
           <em className="text-forest">Jesusity</em> — a word we made for the way we live. It's not a
