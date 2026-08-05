@@ -24,7 +24,7 @@ const DEFAULT_COUPONS: Coupon[] = [
     value: 30, // GH₵30 off
     commissionRate: 10,
     influencerName: "The Jesus Stan",
-    description: "GH₵30 off — The Jesus Stan community code",
+    description: "$2.56 off — The Jesus Stan community code",
     active: true,
     usageCount: 0,
     createdAt: "2026-08-04T00:00:00Z",
@@ -32,10 +32,10 @@ const DEFAULT_COUPONS: Coupon[] = [
   {
     code: "ONEMAN1000",
     type: "FIXED_GHS",
-    value: 50, // GH₵50 off
+    value: 50, // GH₵50 off ($4.27 USD)
     commissionRate: 17,
     influencerName: "Nana Yaw Ofori Atta",
-    description: "GH₵50 off — Nana Yaw Ofori Atta community code",
+    description: "$4.27 off — Nana Yaw Ofori Atta community code",
     active: true,
     usageCount: 0,
     createdAt: "2026-08-04T00:00:00Z",

@@ -110,7 +110,11 @@ function CartPage() {
                 <Check className="w-4 h-4 text-forest" />
                 <span>{appliedCoupon.code} Applied</span>
                 <span className="text-[11px] font-normal text-forest-deep/80">
-                  ({appliedCoupon.value}% OFF)
+                  (
+                  {appliedCoupon.type === "FIXED_GHS"
+                    ? `$${totals.discountUSD.toFixed(2)} OFF`
+                    : `${appliedCoupon.value}% OFF`}
+                  )
                 </span>
               </div>
               <button

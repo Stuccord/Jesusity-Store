@@ -539,7 +539,7 @@ function CheckoutPage() {
                 <span className="text-[10px] font-normal text-forest-deep/80">
                   (
                   {appliedCoupon.type === "FIXED_GHS"
-                    ? `GH₵${appliedCoupon.value} OFF`
+                    ? `$${totals.discountUSD.toFixed(2)} OFF`
                     : `${appliedCoupon.value}% OFF`}
                   )
                 </span>
